@@ -15,7 +15,7 @@ module.exports = async (client, oldMember, newMember) => {
       newMember.guild.channels.cache
         .get(config.channels.welcome)
         .send(
-          `🎉 **A new member has arrived!** 🎉\nPlease welcome <@${newMember.id}> to the **Prayer Room Discord** <@&819708204345851932> team!\nWe're so glad you've joined. :blush:`
+          `🎉 **A new member has arrived!** 🎉\nPlease welcome <@${newMember.id}> to the **Prayer Room Discord** <@&765304484649762827> team!\nWe're so glad you've joined. :blush:`
         )
         .then((message) => {
           message.react(config.emotes.wave);
