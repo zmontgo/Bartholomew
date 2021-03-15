@@ -12,7 +12,7 @@
     }
   ],
   "mongodbURI": "mongodb://localhost:27017",
-  "mongodbDatabase": "fq-core",
+  "mongodbDatabase": "bt-core",
   "channels": {
     "welcome": "765304580161404938",
     "logs": "765306671807332362",

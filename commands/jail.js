@@ -13,7 +13,7 @@ module.exports.execute = async (client, message, args) => {
     message.delete();
 
     try {
-      message.guild.cache.channels.get(logschannel).send(logMessage);
+      await message.guild.cache.channels.get(logschannel).send(logMessage);
     } catch (err) {
       console.log(err);
     }
