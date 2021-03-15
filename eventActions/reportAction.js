@@ -31,7 +31,7 @@ class backspeakCheckAction {
           .setDescription(`Fatal error has been found when trying to report a message. Error: \`${err}\`.`)
           .setFooter(`Action in #${channel.name}`)
           .setTimestamp(message.createdAt);
-        await message.guild.cache.channels.get(config.channels.logs).send(errorMessage);
+        message.guild.channels.cache.get(config.channels.logs).send(errorMessage);
       });
     }
   }

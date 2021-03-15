@@ -1,7 +1,7 @@
 {
   "prefix": ".",
-  "botToken": "123",
-  "modules": ["Utility", "Fun", "Games", "Writing", "Clubs"],
+  "botToken": "NzY1MzA2MTc4MTY2MDYzMTA1.X4S46w.cUkDS0H7fWHwhSmjlczRKFc9Ung",
+  "modules": ["Utility", "Fun", "Games"],
   "version": "3.0.0",
   "versioninfo": "Cleaned up a bit behind the scenes, updated version info.",
   "playing": "updated to v3!",
@@ -32,6 +32,6 @@
     "admin": "765234494730797096"
   },
   "colors": {
-    embedColor: "#C54646"
+    "embedColor": "#C54646"
   }
 }

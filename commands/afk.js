@@ -53,7 +53,7 @@ module.exports.execute = async (client, message, args) => {
   } else {
     await Afks.deleteOne({user: sender.id});
 
-    await message.channel
+    message.channel
       .send(
         `Welcome back, ${
           message.member.nickname
