@@ -1,0 +1,37 @@
+{
+  "prefix": ".",
+  "botToken": "123",
+  "modules": ["Utility", "Fun", "Games", "Writing", "Clubs"],
+  "version": "3.0.0",
+  "versioninfo": "Cleaned up a bit behind the scenes, updated version info.",
+  "playing": "updated to v3!",
+  "channelReacts": [
+    {
+      "channel": "765306866506661898",
+      "react": "👋"
+    }
+  ],
+  "mongodbURI": "mongodb://localhost:27017",
+  "mongodbDatabase": "fq-core",
+  "channels": {
+    "welcome": "765304580161404938",
+    "logs": "765306671807332362",
+    "cafe": "765226048237076523",
+    "starchannel": "820836182043656272",
+    "reportchannel": "820836498660261899"
+  },
+  "emotes": {
+    "bookmark": "765308420327735296",
+    "wave": "👋",
+    "goodmorning": "🌄",
+    "goodnight": "🌛",
+    "report": "820836767409111050",
+    "star": "⭐"
+  },
+  "roles": {
+    "admin": "765234494730797096"
+  },
+  "colors": {
+    embedColor: "#C54646"
+  }
+}
