@@ -12,3 +12,4 @@ client.connect();
 
 // Make sure MongoDB can be accessed outside of this file
 module.exports.Afks = client.db(config.mongodbDatabase).collection('Afks');
+module.exports.Stars = client.db(config.mongodbDatabase).collection('Stars');
