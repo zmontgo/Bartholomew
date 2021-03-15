@@ -1,6 +1,6 @@
 {
   "prefix": ".",
-  "botToken": "NzY1MzA2MTc4MTY2MDYzMTA1.X4S46w.cUkDS0H7fWHwhSmjlczRKFc9Ung",
+  "botToken": "123",
   "modules": ["Utility", "Fun", "Games"],
   "version": "3.0.0",
   "versioninfo": "Cleaned up a bit behind the scenes, updated version info.",
