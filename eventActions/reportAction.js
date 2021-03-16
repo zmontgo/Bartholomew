@@ -8,7 +8,7 @@ class backspeakCheckAction {
 
     try {
       if (reaction._emoji && reaction._emoji.id === config.emotes.report) {
-        await message.reactions.removeAll();
+        await reaction.users.remove(user.id);
         var channel = client.channels.cache.get(message.channel.id);
         let starBoardMessage = new Discord.MessageEmbed()
           .setColor(config.colors.embedColor)
