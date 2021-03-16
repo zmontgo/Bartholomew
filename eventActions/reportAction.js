@@ -5,10 +5,10 @@ const Discord = require('discord.js');
 class backspeakCheckAction {
   static async checkReport(client, user, reaction) {
     var message = reaction.message;
-    await message.reactions.removeAll();
 
     try {
       if (reaction._emoji && reaction._emoji.id === config.emotes.report) {
+        await message.reactions.removeAll();
         var channel = client.channels.cache.get(message.channel.id);
         let starBoardMessage = new Discord.MessageEmbed()
           .setColor(config.colors.embedColor)
