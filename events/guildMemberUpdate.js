@@ -3,9 +3,11 @@ const config = require('../config.json');
 
 module.exports = async (client, oldMember, newMember) => {
   if (oldMember.pending && !newMember.pending) {
-    const memberrole = newMember.guild.roles.cache.find(role => role.id === '819708431451684894');
+    const memberrole = newMember.guild.roles.cache.find(role => role.id === config.roles.member);
+    const reactrole = newMember.guild.roles.cache.find(role => role.id === config.roles.reactDivider);
     try {
       await newMember.roles.add(memberrole);
+      await newMember.roles.add(reactrole);
     } catch(err) {
       console.log(err);
     }
@@ -15,7 +17,7 @@ module.exports = async (client, oldMember, newMember) => {
       newMember.guild.channels.cache
         .get(config.channels.welcome)
         .send(
-          `🎉 **A new member has arrived!** 🎉\nPlease welcome <@${newMember.id}> to the **Prayer Room Discord** <@&765304484649762827> team!\nWe're so glad you've joined. :blush:`
+          `🎉 **A new member has arrived!** 🎉\nPlease welcome <@${newMember.id}> to the **Prayer Room Discord** <@&${config.roles.welcome}> team!\nWe're so glad you've joined. :blush:`
         )
         .then((message) => {
           message.react(config.emotes.wave);
