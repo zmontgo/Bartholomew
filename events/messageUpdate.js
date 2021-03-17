@@ -14,5 +14,5 @@ module.exports = async (client, oldMessage, newMessage) => {
 		return;
   }
   
-  messageUpdateActions.sendMessageToModeration(client, oldMessage, newMessage);
+  //messageUpdateActions.sendMessageToModeration(client, oldMessage, newMessage);
 };
