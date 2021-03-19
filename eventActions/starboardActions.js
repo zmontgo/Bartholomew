@@ -17,7 +17,11 @@ class starboardActions {
 
       if (result === null) {
         if (reaction.count == 1) {
-          if (user.id === reaction.message.author.id) return await reaction.message.channel.send(':x: You cannot star your own message until someone else stars it.');
+          if (user.id === reaction.message.author.id) {
+            await reaction.users.remove(user.id);
+            return await reaction.message.channel.send(':x: You cannot star your own message until someone else stars it.').then(msg => msg.delete({ timeout: 5000 }).catch());
+          }
+
           let starBoardMessage = new Discord.MessageEmbed()
           .setColor(config.colors.embedColor)
           .setAuthor(username, avatar)
