@@ -1,5 +1,3 @@
-'use strict';
-
 // Load dependencies
 const fs = require('fs');
 const Discord = require('discord.js');
