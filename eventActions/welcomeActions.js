@@ -3,7 +3,7 @@ const config = require('../config.json');
 
 class welcomeActions {
   static async channelWelcome(client, oldMember, newMember) {
-    console.log(newMember.roles.cache.has(role => {console.log(role.id);role.id === config.roles.member}));
+    console.log(newMember.roles.cache.has(role => role.id === config.roles.member));
     console.log(!oldMember.roles.cache.has(role => role.id === config.roles.member));
     if (newMember.roles.cache.has(role => role.id === config.roles.member) && !oldMember.roles.cache.has(role => role.id === config.roles.member)) {
       const reactrole = newMember.guild.roles.cache.find(role => role.id === config.roles.reactDivider);
@@ -62,7 +62,9 @@ class welcomeActions {
     
     return await member.guild.channels.cache
     .get(config.channels.gate)
-    .send(welcomePanel);
+    .send(`<@!${member.id}>`, {
+      embed: welcomePanel,
+     });
   }
 }
 
