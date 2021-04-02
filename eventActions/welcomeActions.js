@@ -39,7 +39,7 @@ class welcomeActions {
 
     let welcomePanel = new Discord.MessageEmbed()
       .setColor(config.colors.embedColor)
-      .setTitle(':books: __**Welcome to The Prayer Room Discord Server!**__ :books:')
+      .setTitle('🙏 __**Welcome to The Prayer Room Discord Server!**__ 🙏')
       .setDescription('**We\'ve set up a short process to protect our community. It\'s a three-step process that usually takes less than a minute, we look forward to chatting with you!**')
       .addField(
         'Step One',

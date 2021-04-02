@@ -5,10 +5,10 @@ class bookmarkActions {
   static async bookmarkMessage(user, reaction) {
 		if (reaction._emoji && reaction._emoji.id === config.emotes.bookmark) {
 			const workingMessage = reaction.message;
-			const booksEmote = "📚";
+			const prayEmote = "🙏";
 			const bookmarkEmbed = new Discord.MessageEmbed()
 				.setColor(config.colors.embedColor)
-				.setTitle(`${booksEmote} Prayer Room Server Bookmark ${booksEmote}`)
+				.setTitle(`${prayEmote} Prayer Room Server Bookmark ${prayEmote}`)
 				.setDescription('You asked to bookmark this post from The Prayer Room server.')
 				.addField('From', workingMessage.author, true)
 				.addField('Link to Message', `[Jump to Message](${workingMessage.url})`, true)
