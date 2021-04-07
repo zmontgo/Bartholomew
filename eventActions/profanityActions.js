@@ -4,25 +4,25 @@ const profanityTable = require('../profanity.json');
 
 class profanityActions {
 	static async checkForProfanity(client, message) {
-		if(message.member.roles.cache.some(r => r.id === config.roles.admin)) return;// || message.member.roles.cache.some(r => r.id === config.roles.officer)) return;
+		//if(message.member.roles.cache.some(r => r.id === config.roles.admin)) return;// || message.member.roles.cache.some(r => r.id === config.roles.officer)) return;
 
 		const bannedWords = await profanityTable.banned;
 
-		var cleanmessage = message.content;
+		var cleanmessage = "";
 		var logchannel = client.channels.cache.get(config.channels.logs);
 		var replacedwords = 0;
 
 		await bannedWords.forEach(bannedWord => {
 			if (message.content.toLowerCase().indexOf(bannedWord) != -1) {
-				var asterisks = "";
-				var i = 0;
-				while (i < bannedWord.length) {
-					asterisks = asterisks + "\\*";
-					i += 1;
+				var splitmsg = message.content.split(' ');
+
+				for (const word in splitmsg) {
+					if (splitmsg[word].toLowerCase().indexOf(bannedWord) == -1) {
+						cleanmessage = cleanmessage + splitmsg[word];
+					} else {
+						replacedwords += 1;
+					}
 				}
-				var re = new RegExp(bannedWord,"gi");
-        cleanmessage = cleanmessage.replace(re, asterisks);
-				replacedwords += 1;
 			}
     });
 
@@ -42,10 +42,11 @@ class profanityActions {
       } else {
         const embedMessage = new Discord.MessageEmbed()
           .setColor(config.colors.embedColor)
-          .setTitle(message.member.nickname
-            ? message.member.nickname
-            : message.author.username)
-          .setDescription(cleanmessage);
+          .setTitle('Automatic Profanity Filter')
+          .setDescription(`**${message.member.nickname
+						? message.member.nickname
+						: message.author.username}** said: "${cleanmessage}"`)
+					.setFooter('Profanity removed.');
         await message.channel.send(embedMessage);
       }
 
