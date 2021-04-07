@@ -4,21 +4,19 @@ const profanityTable = require('../profanity.json');
 
 class profanityActions {
 	static async checkForProfanity(client, message) {
-		//if(message.member.roles.cache.some(r => r.id === config.roles.admin)) return;// || message.member.roles.cache.some(r => r.id === config.roles.officer)) return;
-
 		const bannedWords = await profanityTable.banned;
 
 		var cleanmessage = "";
+		var splitmsg = message.content.split(' ');
 		var logchannel = client.channels.cache.get(config.channels.logs);
 		var replacedwords = 0;
 
 		await bannedWords.forEach(bannedWord => {
 			if (message.content.toLowerCase().indexOf(bannedWord) != -1) {
-				var splitmsg = message.content.split(' ');
 
 				for (const word in splitmsg) {
 					if (splitmsg[word].toLowerCase().indexOf(bannedWord) == -1) {
-						cleanmessage = cleanmessage + splitmsg[word];
+						cleanmessage = cleanmessage + splitmsg[word] + " ";
 					} else {
 						replacedwords += 1;
 					}
@@ -28,8 +26,7 @@ class profanityActions {
 
 		if (replacedwords > 0) {
       message.delete();
-      var check = cleanmessage;
-      if(check.split("*").join("").split('\\').join('').trim().length == 0) { // Only contains curse words
+      if(replacedwords == splitmsg.length) { // Only contains curse words
         const embedMessage = new Discord.MessageEmbed()
           .setColor(config.colors.embedColor)
           .setTitle(message.member.nickname
@@ -45,7 +42,7 @@ class profanityActions {
           .setTitle('Automatic Profanity Filter')
           .setDescription(`**${message.member.nickname
 						? message.member.nickname
-						: message.author.username}** said: "${cleanmessage}"`)
+						: message.author.username}** said: "${cleanmessage.trim()}"`)
 					.setFooter('Profanity removed.');
         await message.channel.send(embedMessage);
       }
