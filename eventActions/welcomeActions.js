@@ -43,7 +43,7 @@ class welcomeActions {
       .setDescription('**We\'ve set up a short process to protect our community. It\'s a three-step process that usually takes less than a minute, we look forward to chatting with you!**')
       .addField(
         'Step One',
-        'If you haven\'t already, be sure to verify your email and read the rules. You can find the rules popup by clicking the `Complete` button to the right of the message bar on the bottom. This will allow you to send messages here and enable you for step two.'
+        'Click the `Complete` button at the bottom of the screen. This will allow you to send messages here and allow you to move on to step two.\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬'
       )
       .addField(
         'Step Two',
@@ -51,11 +51,12 @@ class welcomeActions {
     • What you'd like to be called.
     • Your age (or whether you're over or under 18).
     • How you found this server.
-    • A bit about yourself.`
+    • What you hope to get out of the community.
+    ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬`
       )
       .addField(
         'Step Three',
-        'Finally, ping the <@&824421461526708304> role to gain the Member role and join the server! This shouldn\'t take long.'
+        'Finally, ping the <@&824421461526708304> role to gain the Member role and join the server!\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬'
       );
     
     return await member.guild.channels.cache
