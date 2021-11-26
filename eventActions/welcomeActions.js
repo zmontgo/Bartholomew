@@ -6,9 +6,11 @@ class welcomeActions {
     if (newMember.roles.cache.some(role => role.id === config.roles.member) && !oldMember.roles.cache.some(role => role.id === config.roles.member)) {
       const reactrole = newMember.guild.roles.cache.find(role => role.id === config.roles.reactDivider);
       const levelrole = newMember.guild.roles.cache.find(role => role.id === config.roles.rankDivider);
+      const extrachannels = newMember.guild.roles.cache.find(role => role.id === config.roles.extraDivider);
       try {
         await newMember.roles.add(reactrole);
         await newMember.roles.add(levelrole);
+        await newMember.roles.add(extrarole);
       } catch(err) {
         console.log(err);
       }
