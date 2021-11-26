@@ -10,7 +10,7 @@ class welcomeActions {
       try {
         await newMember.roles.add(reactrole);
         await newMember.roles.add(levelrole);
-        await newMember.roles.add(extrarole);
+        await newMember.roles.add(extrachannels);
       } catch(err) {
         console.log(err);
       }
