@@ -22,7 +22,7 @@ module.exports = async (client, message) => {
       message.channel.stopTyping();
     }
   }
-  
+
   profanityActions.checkForProfanity(client, message);
   // Handle greetings
   cafeActions.greetMorningOrNight(client, message);

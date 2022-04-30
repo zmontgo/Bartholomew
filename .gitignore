@@ -1,5 +1,5 @@
 config.json
-databaseFiles/storagedata.db
+schema.prisma
 
 # Logs
 logs

@@ -1,7 +1,7 @@
 // Get the afk Table stored in the MongoDB database
-const Afks = require('../databaseFiles/connect.js').Afks;
-const Discord = require('discord.js');
-const config = require('../config.json');
+const prisma = require('../utils/database.js');
+const { MessageEmbed } = require('discord.js');
+const { prefix, colors } = require('../config.json');
 
 // call function with variables timestamp1 and timestamp2 in call
 function timedifference(timestamp1, timestamp2) {
@@ -19,7 +19,7 @@ function timedifference(timestamp1, timestamp2) {
 class afkMessageCheckAction {
   static async checkIfUserIsAFK(client, message) {
     // If the message is a command, we ignore it, to prevent the bot from sending the message right away, when a user goes AFK
-    if (message.content.startsWith(config.prefix)) {
+    if (message.content.startsWith(prefix)) {
       return;
     }
 
@@ -29,7 +29,7 @@ class afkMessageCheckAction {
     ) {
       const sender = message.author;
 
-      await Afks.deleteOne({user: sender.id});
+      await prisma.afks.delete({ where: { user: sender.id } });
 
       await message.channel
         .send(
@@ -43,34 +43,46 @@ class afkMessageCheckAction {
         .catch('Error sending message.');
     }
 
-		const noLongerAFKMessage = new Discord.MessageEmbed()
-			.setTitle(`You are currently AFK, ${message.member.nickname ? message.member.nickname : message.author.username}`)
-			.addField('Are you back?', 'Run the `.afk` command again in the server.')
-			.setFooter('This message will delete itself after 15 seconds.')
-			.setColor(config.colors.embedColor);
-		const user = message.author;
+    const noLongerAFKMessage = new MessageEmbed()
+      .setTitle(
+        `You are currently AFK, ${
+          message.member.nickname
+            ? message.member.nickname
+            : message.author.username
+        }`
+      )
+      .addField('Are you back?', 'Run the `.afk` command again in the server.')
+      .setFooter('This message will delete itself after 15 seconds.')
+      .setColor(colors.embedColor);
+    const user = message.author;
 
-    let result = await Afks.findOne({'user': user.id});
+    let result = await prisma.afks.findUnique({ where: { user: user.id } });
 
     if (result !== null && timedifference(result.cooldown, Date.now()) >= 3) {
-      message.author.send(noLongerAFKMessage)
-      .catch((err) => {
-        if (err.name == "DiscordAPIError" && timedifference(result.cooldown, Date.now()) >= 3) {
-          return message.channel.send('Looks like you\'ve disabled private messages! You\'re currently marked as AFK. If you want to turn off AFK, just use `.afk` again!').then(msg => msg.delete({ timeout: 5000 }).catch());
+      message.author.send(noLongerAFKMessage).catch((err) => {
+        if (
+          err.name == 'DiscordAPIError' &&
+          timedifference(result.cooldown, Date.now()) >= 3
+        ) {
+          return message.channel
+            .send(
+              "Looks like you've disabled private messages! You're currently marked as AFK. If you want to turn off AFK, just use `.afk` again!"
+            )
+            .then((msg) => msg.delete({ timeout: 5000 }).catch());
         }
 
-        console.log("Message error: " + err);
+        console.log('Message error: ' + err);
       });
 
       // Reset cooldown
-      Afks.updateOne(
-        { 'user': user.id },
-        { $set: { 'cooldown': Date.now() } },
-        { upsert: true }
-      )
-      .catch((error) => {
-        'Update error: ' + error;
-      });
+      prisma.afks
+        .update({
+          where: { user: user.id },
+          data: { cooldown: Date.now() },
+        })
+        .catch((error) => {
+          'Update error: ' + error;
+        });
     }
   }
 
@@ -116,16 +128,16 @@ class afkMessageCheckAction {
     if (message.mentions.members.size == 1) {
       let id = message.mentions.members.firstKey();
 
-      let result = await Afks.findOne({'user': id});
+      let result = await prisma.afks.findUnique({ where: { user: id } });
 
       if (result !== null && message.author.id != id) {
         message.guild.members.fetch(result.user).then((user) => {
           let name = user.nickname ? user.nickname : user.user.username;
-          const embed = new Discord.MessageEmbed()
+          const embed = new MessageEmbed()
             .setTitle(`${name} is not here`)
             .addField('AFK Message:', result.message)
             .addField('Went AFK:', timeSince(result.date) + ' ago')
-            .setColor(config.colors.embedColor);
+            .setColor(colors.embedColor);
           message.channel.send(embed);
         });
       }

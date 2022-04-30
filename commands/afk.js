@@ -1,14 +1,12 @@
 // Get the afk Table stored in the MongoDB database
-const Afks = require('../databaseFiles/connect.js').Afks;
+const prisma = require('../utils/database.js');
 const config = require('../config.json');
 
 module.exports.execute = async (client, message, args) => {
   try {
-    if (
-      message.content.toLowerCase().indexOf('good') != -1 &&
+    if (message.content.toLowerCase().indexOf('good') != -1 &&
       !message.content.toLowerCase().indexOf('night') != -1 &&
-      !message.content.toLowerCase().indexOf('guys') != -1
-    ) {
+      !message.content.toLowerCase().indexOf('guys') != -1) {
       //pass
     } else {
       message.delete();
@@ -29,42 +27,40 @@ module.exports.execute = async (client, message, args) => {
     afkMessage = "They didn't tell us where they went...";
   }
 
-  let result = await Afks.findOne({ user: sender.id });
+  let result = await prisma.afks.findUnique({ where: { user: sender.id } });
 
   if (result === null) {
     afkObject = {
       message: afkMessage,
       user: sender.id,
       cooldown: Date.now(),
-      date: Date.now()
-    }
+      date: Date.now(),
+    };
 
-    await Afks.insertOne(afkObject);
+    await prisma.afks.create({ data: afkObject });
 
     try {
-    message.channel
-      .send(
-        `I have marked you as AFK, <@${sender.id}>. Anyone who pings you will be notified you are away.\n\`\`\`AFK Message: ${afkMessage}\`\`\``
-      )
-      .then((msg) => msg.delete({ timeout: 10000 }).catch());
+      message.channel
+        .send(
+          `I have marked you as AFK, <@${sender.id}>. Anyone who pings you will be notified you are away.\n\`\`\`AFK Message: ${afkMessage}\`\`\``
+        )
+        .then((msg) => msg.delete({ timeout: 10000 }).catch());
     } catch (err) {
       console.log(err);
     }
   } else {
-    await Afks.deleteOne({user: sender.id});
+    await prisma.afks.delete({ where: { user: sender.id } });
 
     message.channel
       .send(
-        `Welcome back, ${
-          message.member.nickname
-            ? message.member.nickname
-            : message.author.username
-        }!`
+        `Welcome back, ${message.member.nickname
+          ? message.member.nickname
+          : message.author.username}!`
       )
       .then((delmessage) => delmessage.delete({ timeout: 5000 }))
       .catch('Error sending message.');
   }
-};
+}
 
 module.exports.config = {
   name: 'afk',

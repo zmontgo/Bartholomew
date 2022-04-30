@@ -6,11 +6,18 @@
   "engines": {
     "node": "^16.13.0"
   },
+  "scripts": {
+    "prettier": "prettier --write package.json **/*.js"
+  },
+  "prisma": {
+    "schema": "database/schema.prisma"
+  },
   "author": {
     "name": "Zachary Montgomery",
     "url": "https://codingproject.org/"
   },
   "dependencies": {
+    "@prisma/client": "^3.13.0",
     "cron": "^1.8.2",
     "data-store": "^3.1.0",
     "discord.js": "^12.5.1",
@@ -18,7 +25,8 @@
     "moment": "^2.26.0",
     "mongodb": "^3.6.4",
     "mysql2": "^2.0.2",
-    "prettier": "^2.0.5",
+    "prettier": "^2.6.2",
+    "prisma": "^3.13.0",
     "rss-parser": "^3.7.2",
     "sequelize": "^6.9.0"
   },

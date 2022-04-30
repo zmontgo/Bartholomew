@@ -5,7 +5,8 @@ module.exports.execute = async (client, message) => {
 module.exports.config = {
   name: 'cake',
   aliases: ['cake', 'snake'],
-  module: "Fun",
-  description: 'I will choose either :cake: or :snake:. (My version of Russian Roulette)',
-  usage: ['cake']
+  module: 'Fun',
+  description:
+    'I will choose either :cake: or :snake:. (My version of Russian Roulette)',
+  usage: ['cake'],
 };
