@@ -22,7 +22,7 @@ class starboardActions {
       });
 
       if (result === null) {
-        if (reaction.count == 1) {
+        if (reaction.count >= 1) {
           if (user.id === reaction.message.author.id) {
             await reaction.users.remove(user.id);
             return await reaction.message.channel
