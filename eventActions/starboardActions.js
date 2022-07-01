@@ -18,7 +18,7 @@ class starboardActions {
       var att = reaction.message.attachments;
 
       let result = await prisma.stars.findUnique({
-        where: { messageID: parseInt(reaction.message.id) },
+        where: { messageid: parseInt(reaction.message.id) },
       });
 
       if (result === null) {
