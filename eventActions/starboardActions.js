@@ -23,7 +23,7 @@ class starboardActions {
 
       if (result === null) {
         if (reaction.count >= 1) {
-          if (user.id === reaction.message.author.id) {
+          if (user.id === reaction.message.author.id && reaction.count == 1) {
             await reaction.users.remove(user.id);
             return await reaction.message.channel
               .send(
