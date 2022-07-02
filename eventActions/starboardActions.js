@@ -65,11 +65,11 @@ class starboardActions {
                 messageChannelid: reaction.message.channel.id,
               };
 
-              prisma.stars.create({ data: starObject }).then(() => {
+              await prisma.stars.create({ data: starObject }).then(() => {
                 return;
               })
             } else {
-              prisma.stars.update({
+              await prisma.stars.update({
                 where: { messageid: reaction.message.id },
                 data: { embedid: sentmessage.id },
               })
