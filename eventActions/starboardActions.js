@@ -21,6 +21,8 @@ class starboardActions {
         where: { messageid: parseInt(reaction.message.id) },
       });
 
+      console.log(result)
+
       if (result === null) {
         if (reaction.count >= 1) {
           if (user.id === reaction.message.author.id && reaction.count == 1) {
