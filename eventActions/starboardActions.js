@@ -29,8 +29,9 @@ class starboardActions {
           .messages.fetch(result.embedID);
       }
 
-      if (result === null ||
-        !embedMessage.content) {
+      console.log(result)
+
+      if (!embedMessage.content) {
         if (reaction.count >= 1) {
           if (user.id === reaction.message.author.id && reaction.count == 1) {
             await reaction.users.remove(user.id);
@@ -63,7 +64,7 @@ class starboardActions {
                 embedid: sentmessage.id,
                 messageChannelid: reaction.message.channel.id,
               };
-              
+
               prisma.stars.create({ data: starObject }).then(() => {
                 return;
               })
