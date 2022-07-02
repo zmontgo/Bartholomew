@@ -17,8 +17,6 @@ class starboardActions {
 
       var att = reaction.message.attachments;
 
-      await prisma.stars.deleteMany()
-
       let result = await prisma.stars.findUnique({ where: { messageid: reaction.message.id} });
 
       if (result === null) {
@@ -39,6 +37,8 @@ class starboardActions {
           let channel = await client.channels.cache.get(
             config.channels.starchannel
           );
+
+          console.log(starBoardMessage)
 
           channel.send({ embeds: [starBoardMessage] }).then((sentmessage) => {
             let starObject = {
