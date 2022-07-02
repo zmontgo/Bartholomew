@@ -88,6 +88,7 @@ class starboardActions {
               starmessageEmbed.setFooter({
                 text: '⭐ Times starred: ' + times.toString()
               });
+              console.log("Hi")
               return await starmessage.edit(starmessageEmbed);
             } else {
               prisma.stars.delete({ where: { messageid: reaction.message.id } }).then(() => {
