@@ -21,7 +21,7 @@ class starboardActions {
         where: { messageid: reaction.message.id },
       });
 
-      if (result === null || (
+      if (result === null && (
         !client.channels.cache
           .get(channels.starchannel)
           .messages.fetch(result.embedID))) {
