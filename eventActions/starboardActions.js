@@ -29,7 +29,7 @@ class starboardActions {
           .messages.fetch(result.embedID);
       }
 
-      console.log(result)
+      console.log(embedMessage.embeds)
 
       if (!embedMessage.content) {
         if (reaction.count >= 1) {
