@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const config = require('../config');
 const prisma = require('../databaseFiles/connect.js');
 
-export class starboardActions {
+class starboardActions {
   static async addStar(client, user, reaction) {
     if (
       reaction._emoji &&
@@ -123,3 +123,5 @@ export class starboardActions {
     }
   }
 }
+
+module.exports = starboardActions;
