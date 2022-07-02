@@ -21,9 +21,10 @@ class starboardActions {
         where: { messageid: reaction.message.id },
       });
 
-      console.log(result)
-
-      if (result === null) {
+      if (result === null || (
+        !client.channels.cache
+          .get(channels.starchannel)
+          .messages.fetch(result.embedID))) {
         if (reaction.count >= 1) {
           if (user.id === reaction.message.author.id && reaction.count == 1) {
             await reaction.users.remove(user.id);

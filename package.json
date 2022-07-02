@@ -4,7 +4,7 @@
   "description": "Bot designed for the Prayer Room Discord server.",
   "main": "node bot.js",
   "engines": {
-    "node": "^16.13.0"
+    "node": ">=16.13.0"
   },
   "scripts": {
     "prettier": "prettier --write package.json **/*.js"
