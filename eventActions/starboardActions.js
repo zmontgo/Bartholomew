@@ -72,11 +72,11 @@ class starboardActions {
       let result = await prisma.stars.findUnique({ where: { messageid: reaction.message.id }});
 
       if (result !== null) {
-        client.channels.cache
-          .get(config.channels.starchannel)
-          .messages.fetch(result.embedid)
+        const starchannel = await client.channels.cache
+          .get(config.channels.starchannel);
+
+        starchannel.messages.fetch(result.embedid)
           .then((starmessage) => {
-            console.log(starmessage.embeds)
             if (reaction.count > 0) {
               var starmessageEmbed = new Discord.MessageEmbed(starmessage.embeds[0]);
               var times = starmessageEmbed.footer.text.substring(
@@ -102,9 +102,10 @@ class starboardActions {
     let result = await prisma.stars.findUnique({ where: { messageid: message.id }});
 
     if (result !== null) {
-      client.channels.cache
-        .get(config.channels.starchannel)
-        .messages.fetch(result.embedid)
+      const starchannel = await client.channels.cache
+        .get(config.channels.starchannel);
+        
+      starchannel.messages.fetch(result.embedid)
         .then((starmessage) => {
           prisma.stars.delete({ where: { messageid: message.id} }).then((_) => {
             return starmessage.delete();
