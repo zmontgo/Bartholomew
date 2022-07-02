@@ -38,8 +38,6 @@ class starboardActions {
             config.channels.starchannel
           );
 
-          console.log(starBoardMessage)
-
           channel.send({ embeds: [starBoardMessage] }).then((sentmessage) => {
             let starObject = {
               messageid: reaction.message.id,
