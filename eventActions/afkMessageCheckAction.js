@@ -52,7 +52,7 @@ class afkMessageCheckAction {
         }`
       )
       .addField('Are you back?', 'Run the `.afk` command again in the server.')
-      .setFooter('This message will delete itself after 15 seconds.')
+      .setFooter({ text: 'This message will delete itself after 15 seconds.' })
       .setColor(colors.embedColor);
     const user = message.author;
 

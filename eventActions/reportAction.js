@@ -17,7 +17,7 @@ class backspeakCheckAction {
             message.author.displayAvatarURL()
           )
           .setDescription(message.content)
-          .setFooter(`Reported in #${channel.name}`)
+          .setFooter({text: `Reported in #${channel.name}`})
           .setTimestamp(message.createdAt);
         client.channels.cache
           .get(config.channels.reportchannel)
@@ -36,7 +36,7 @@ class backspeakCheckAction {
         .setDescription(
           `Fatal error has been found when trying to report a message. Error: \`${err}\`.`
         )
-        .setFooter(`Action in #${channel.name}`)
+        .setFooter({ text: `Action in #${channel.name}` })
         .setTimestamp(message.createdAt);
       message.guild.channels.cache.get(config.channels.logs).send({ embeds: [errorMessage]});
     }

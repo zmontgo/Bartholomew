@@ -60,7 +60,7 @@ class starboardActions {
         starchannel.messages.fetch(result.embedid).then(async (starmessage) => {
           var starmessageEmbed = starmessage.embeds[0];
           var times = reaction.count;
-          starmessageEmbed.setFooter('⭐ Times starred: ' + times.toString());
+          starmessageEmbed.setFooter({text: '⭐ Times starred: ' + times.toString() });
           return await starmessage.edit({ embeds: [starmessageEmbed] });
         });
       }
@@ -83,9 +83,9 @@ class starboardActions {
                 starmessageEmbed.footer.text.length
               );
               times = reaction.count;
-              starmessageEmbed.setFooter(
-                '⭐ Times starred: ' + times.toString()
-              );
+              starmessageEmbed.setFooter({
+                text: '⭐ Times starred: ' + times.toString()
+            });
               return starmessage.edit(starmessageEmbed);
             } else {
               prisma.stars.delete({ where: { messageid: reaction.message.id }}).then(() => {
