@@ -14,7 +14,7 @@ module.exports.execute = async (client, message, args) => {
     message.delete();
 
     try {
-      message.guild.channels.cache.get(logschannel).send(logMessage);
+      message.guild.channels.cache.get(logschannel).send({ embeds: [logMessage]});
     } catch (err) {
       console.log(err);
     }

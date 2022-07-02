@@ -3,28 +3,10 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const config = require('./config.json');
 
-Discord.Structures.extend('GuildMember', GuildMember => {
-  class GuildMemberWithPending extends GuildMember {
-    pending = false;
-
-    constructor(client, data, guild) {
-      super(client, data, guild);
-      this.pending = data.pending ?? false;
-    }
-
-    _patch(data) {
-      super._patch(data);
-      this.pending = data.pending ?? false;
-    }
-  }
-  return GuildMemberWithPending;
-});
+const allIntents = new Discord.Intents(32767);
 
 const client = new Discord.Client({
-  disableMentions: 'everyone',
-  ws: {
-    intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MEMBERS', 'GUILD_MESSAGE_REACTIONS']
-  },
+  intents: [allIntents, Discord.Intents.FLAGS.GUILD_MEMBERS],
   partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 });
 

@@ -38,7 +38,7 @@ class backspeakCheckAction {
         )
         .setFooter(`Action in #${channel.name}`)
         .setTimestamp(message.createdAt);
-      message.guild.channels.cache.get(config.channels.logs).send(errorMessage);
+      message.guild.channels.cache.get(config.channels.logs).send({ embeds: [errorMessage]});
     }
   }
 }

@@ -51,7 +51,7 @@ class welcomeActions {
         `${member.user.username}#${member.user.discriminator} joined the server.`
       )
       .setColor(config.colors.embedColor);
-    client.channels.cache.get(config.channels.logs).send(embed);
+    client.channels.cache.get(config.channels.logs).send({ embeds: [embed]});
 
     let welcomePanel = new Discord.MessageEmbed()
       .setColor(config.colors.embedColor)
@@ -78,8 +78,9 @@ class welcomeActions {
 
     return await member.guild.channels.cache
       .get(config.channels.gate)
-      .send(`<@!${member.id}>`, {
-        embed: welcomePanel,
+      .send({
+        content: `<@!${member.id}>`,
+        embeds: [welcomePanel],
       });
   }
 }

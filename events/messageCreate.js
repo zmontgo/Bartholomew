@@ -16,9 +16,8 @@ module.exports = async (client, message) => {
       client.commands.get(client.aliases.get(command));
 
     if (commandfile) {
-      message.channel.startTyping();
+      message.channel.sendTyping();
       commandfile.execute(client, message, args); // Execute found command
-      message.channel.stopTyping();
     }
   }
 

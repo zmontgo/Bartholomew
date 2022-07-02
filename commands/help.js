@@ -32,7 +32,7 @@ module.exports.execute = async (client, message, args) => {
     });
     try {
       helpMessage.addField(`All Modules`, `${modulelist}`);
-      return await message.channel.send(helpMessage);
+      return await message.channel.send({ embeds: [helpMessage]});
     } catch (err) {
       console.log(err);
     }
@@ -57,7 +57,7 @@ module.exports.execute = async (client, message, args) => {
       helpMessage.addField('Usage:', command.config.usage);
 
       try {
-        message.channel.send(helpMessage);
+        message.channel.send({ embeds: [helpMessage]});
       } catch (err) {
         console.log(err);
       }
@@ -82,7 +82,7 @@ module.exports.execute = async (client, message, args) => {
           }
         });
         try {
-          message.channel.send(helpMessage);
+          message.channel.send({ embeds: [helpMessage]});
         } catch (err) {
           console.log(err);
         }
@@ -101,7 +101,7 @@ module.exports.execute = async (client, message, args) => {
           );
         });
         try {
-          message.channel.send(helpMessage);
+          message.channel.send({ embeds: [helpMessage]});
         } catch (err) {
           console.log(err);
         }

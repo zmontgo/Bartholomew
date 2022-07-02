@@ -21,7 +21,7 @@ module.exports.execute = async (client, message) => {
       'GitHub',
       'Want to help us develop Bartholomew? Check out the repo on GitHub! https://github.com/zmontgo/Bartholomew'
     );
-  return await message.channel.send(infoMessage);
+  return await message.channel.send({ embeds: [infoMessage]});
 };
 
 module.exports.config = {

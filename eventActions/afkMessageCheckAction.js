@@ -59,7 +59,7 @@ class afkMessageCheckAction {
     let result = await prisma.afks.findUnique({ where: { user: user.id } });
 
     if (result !== null && timedifference(result.cooldown, Date.now()) >= 3) {
-      message.author.send(noLongerAFKMessage).catch((err) => {
+      message.author.send({ embeds: [noLongerAFKMessage]}).catch((err) => {
         if (
           err.name == 'DiscordAPIError' &&
           timedifference(result.cooldown, Date.now()) >= 3
