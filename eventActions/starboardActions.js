@@ -17,6 +17,8 @@ class starboardActions {
 
       var att = reaction.message.attachments;
 
+      await prisma.stars.deleteMany()
+
       let result = await prisma.stars.findUnique({ where: { messageid: reaction.message.id} });
 
       if (result === null) {
