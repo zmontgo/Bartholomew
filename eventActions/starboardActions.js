@@ -21,7 +21,7 @@ class starboardActions {
         where: { messageid: reaction.message.id },
       });
 
-      console.log(client.channels.cache
+      console.log(await client.channels.cache
         .get(channels.starchannel)
         .messages.fetch(result.embedID))
 
