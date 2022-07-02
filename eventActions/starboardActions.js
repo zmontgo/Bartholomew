@@ -23,7 +23,7 @@ class starboardActions {
 
       console.log((await client.channels.cache
         .get(channels.starchannel)
-        .messages.fetch(result.embedID)).deleted)
+        .messages.fetch(result.embedID)).content)
 
       if (result === null && (
         !(await client.channels.cache
