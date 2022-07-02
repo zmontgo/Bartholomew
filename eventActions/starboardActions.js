@@ -91,7 +91,8 @@ class starboardActions {
           .get(channels.starchannel)
           .messages.fetch(result.embedID)
           .then((starmessage) => {
-            if (starmessage) {
+            console.log(starmessage)
+            if (starmessage && starmessage.embeds) {
               if (reaction.count > 0) {
                 var starmessageEmbed = starmessage.embeds[0];
                 var times = starmessageEmbed.footer.text.substring(
