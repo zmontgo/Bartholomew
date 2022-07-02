@@ -21,9 +21,9 @@ class starboardActions {
         where: { messageid: reaction.message.id },
       });
 
-      console.log(await client.channels.cache
+      console.log((await client.channels.cache
         .get(channels.starchannel)
-        .messages.fetch(result.embedID))
+        .messages.fetch(result.embedID)).deleted)
 
       if (result === null && (
         !(await client.channels.cache
