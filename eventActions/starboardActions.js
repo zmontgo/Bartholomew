@@ -21,6 +21,10 @@ class starboardActions {
         where: { messageid: reaction.message.id },
       });
 
+      console.log(client.channels.cache
+        .get(channels.starchannel)
+        .messages.fetch(result.embedID))
+
       if (result === null && (
         !client.channels.cache
           .get(channels.starchannel)
@@ -91,7 +95,6 @@ class starboardActions {
           .get(channels.starchannel)
           .messages.fetch(result.embedID)
           .then((starmessage) => {
-            console.log(starmessage)
             if (starmessage && starmessage.embeds) {
               if (reaction.count > 0) {
                 var starmessageEmbed = starmessage.embeds[0];
