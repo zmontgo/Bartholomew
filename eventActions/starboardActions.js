@@ -29,9 +29,10 @@ class starboardActions {
           .messages.fetch(result.embedID);
       }
 
-      console.log(embedMessage)
+      console.log(embedMessage.content)
+      console.log(embedMessage.embeds)
 
-      if (!embedMessage.content) {
+      if (!embedMessage || !embedMessage.content) {
         if (reaction.count >= 1) {
           if (user.id === reaction.message.author.id && reaction.count == 1) {
             await reaction.users.remove(user.id);
