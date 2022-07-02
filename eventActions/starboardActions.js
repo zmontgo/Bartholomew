@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../config');
-const prisma = require('../databaseFiles/connect.js');
+const prisma = require('../utils/database.js');
 
 class starboardActions {
   static async addStar(client, user, reaction) {
