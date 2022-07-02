@@ -75,9 +75,9 @@ class starboardActions {
           .get(config.channels.starchannel);
 
         starchannel.messages.fetch(result.embedid)
-          .then((starmessage) => {
-            console.log(starmessage)
-            
+          .then(async (starmessage) => {
+            console.log(reaction.count);
+
             if (reaction.count > 0) {
               var starmessageEmbed = new Discord.MessageEmbed(starmessage.embeds[0]);
               var times = starmessageEmbed.footer.text.substring(
@@ -87,10 +87,10 @@ class starboardActions {
               times = reaction.count;
               starmessageEmbed.setFooter({
                 text: '⭐ Times starred: ' + times.toString()
-            });
-              return starmessage.edit(starmessageEmbed);
+              });
+              return await starmessage.edit(starmessageEmbed);
             } else {
-              prisma.stars.delete({ where: { messageid: reaction.message.id }}).then(() => {
+              prisma.stars.delete({ where: { messageid: reaction.message.id } }).then(() => {
                 return starmessage.delete();
               });
             }
