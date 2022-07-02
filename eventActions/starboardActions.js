@@ -18,7 +18,7 @@ class starboardActions {
       var att = reaction.message.attachments;
 
       let result = await prisma.stars.findUnique({
-        where: { messageid: parseInt(reaction.message.id) },
+        where: { messageid: reaction.message.id },
       });
 
       console.log(result)
@@ -82,7 +82,7 @@ class starboardActions {
   static async removeStar(client, user, reaction) {
     if (reaction._emoji && reaction._emoji.name === emotes.star) {
       let result = await prisma.stars.findUnique({
-        where: { messageid: parseInt(reaction.message.id) },
+        where: { messageid: reaction.message.id },
       });
 
       if (result !== null) {
@@ -103,7 +103,7 @@ class starboardActions {
               return starmessage.edit(starmessageEmbed);
             } else {
               prisma.stars
-                .delete({ where: { messageid: parseInt(reaction.message.id) } })
+                .delete({ where: { messageid: reaction.message.id } })
                 .then(() => {
                   return starmessage.delete();
                 });
@@ -115,7 +115,7 @@ class starboardActions {
 
   static async removeMessage(client, message) {
     let result = await prisma.stars.findUnique({
-      where: { messageid: parseInt(message.id) },
+      where: { messageid: message.id },
     });
 
     if (result !== null) {
@@ -124,17 +124,17 @@ class starboardActions {
         .messages.fetch(result.embedID)
         .then((starmessage) => {
           prisma.stars
-            .delete({ where: { messageid: parseInt(message.id) } })
+            .delete({ where: { messageid: message.id } })
             .then((_) => {
               return starmessage.delete();
             });
         });
     }
 
-    result = await prisma.stars.findUnique({ where: { embedid: parseInt(message.id) } });
+    result = await prisma.stars.findUnique({ where: { embedid: message.id } });
 
     if (result !== null) {
-      prisma.stars.delete({ where: { embedid: parseInt(message.id) } }).then(
+      prisma.stars.delete({ where: { embedid: message.id } }).then(
         client.channels.cache
           .get(result.messageChannelID)
           .messages.fetch(result.messageID)
