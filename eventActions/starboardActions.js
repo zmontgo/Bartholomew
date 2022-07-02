@@ -57,17 +57,22 @@ class starboardActions {
           let channel = await client.channels.cache.get(channels.starchannel);
 
           channel.send(starBoardMessage).then((sentmessage) => {
-            let starObject = {
-              messageid: reaction.message.id,
-              embedid: sentmessage.id,
-              messageChannelid: reaction.message.channel.id,
-            };
-
-            prisma.stars.create({ data: starObject }).then(() => {
-              return;
-            }).catch(err => {
-              console.error(err)
-            });
+            if (!result) {
+              let starObject = {
+                messageid: reaction.message.id,
+                embedid: sentmessage.id,
+                messageChannelid: reaction.message.channel.id,
+              };
+              
+              prisma.stars.create({ data: starObject }).then(() => {
+                return;
+              })
+            } else {
+              prisma.stars.update({
+                where: { messageid: reaction.message.id },
+                data: { embedid: sentmessage.id },
+              })
+            }
           });
         }
       } else {
