@@ -28,9 +28,8 @@ class starboardActions {
           .get(channels.starchannel)
           .messages.fetch(result.embedID);
       }
-
-      console.log(embedMessage.content)
-      console.log(embedMessage.embeds)
+      
+      console.log(embedMessage.url)
 
       if (!embedMessage || !embedMessage.embeds) {
         if (reaction.count >= 1) {
