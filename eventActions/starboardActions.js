@@ -1,6 +1,6 @@
-import Discord from 'discord.js';
-import config from '../config';
-import { prisma } from '../databaseFiles/connect.js';
+const Discord = require('discord.js');
+const config = require('../config');
+const prisma = require('../databaseFiles/connect.js');
 
 export class starboardActions {
   static async addStar(client, user, reaction) {
