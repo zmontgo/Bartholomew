@@ -21,14 +21,16 @@ class starboardActions {
         where: { messageid: reaction.message.id },
       });
 
-      console.log((await client.channels.cache
-        .get(channels.starchannel)
-        .messages.fetch(result.embedID)).content)
-
-      if (result === null && (
-        !(await client.channels.cache
+      var embedMessage;
+      
+      if (result) {
+        embedMessage = await client.channels.cache
           .get(channels.starchannel)
-          .messages.fetch(result.embedID)))) {
+          .messages.fetch(result.embedID);
+      }
+
+      if (result === null ||
+        !embedMessage.content) {
         if (reaction.count >= 1) {
           if (user.id === reaction.message.author.id && reaction.count == 1) {
             await reaction.users.remove(user.id);
@@ -67,19 +69,14 @@ class starboardActions {
           });
         }
       } else {
-        client.channels.cache
-          .get(channels.starchannel)
-          .messages.fetch(result.embedID)
-          .then((starmessage) => {
-            var starmessageEmbed = starmessage.embeds[0];
-            var times = starmessageEmbed.footer.text.substring(
-              16,
-              starmessageEmbed.footer.text.length
-            );
-            times = reaction.count;
-            starmessageEmbed.setFooter('⭐ Times starred: ' + times.toString());
-            return starmessage.edit(starmessageEmbed);
-          });
+        var starmessageEmbed = embedMessage.embeds[0];
+        var times = starmessageEmbed.footer.text.substring(
+          16,
+          starmessageEmbed.footer.text.length
+        );
+        times = reaction.count;
+        starmessageEmbed.setFooter('⭐ Times starred: ' + times.toString());
+        return embedMessage.edit(starmessageEmbed);
       }
     }
   }
