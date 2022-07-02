@@ -91,23 +91,25 @@ class starboardActions {
           .get(channels.starchannel)
           .messages.fetch(result.embedID)
           .then((starmessage) => {
-            if (reaction.count > 0) {
-              var starmessageEmbed = starmessage.embeds[0];
-              var times = starmessageEmbed.footer.text.substring(
-                16,
-                starmessageEmbed.footer.text.length
-              );
-              times = reaction.count;
-              starmessageEmbed.setFooter(
-                '⭐ Times starred: ' + times.toString()
-              );
-              return starmessage.edit(starmessageEmbed);
-            } else {
-              prisma.stars
-                .delete({ where: { messageid: reaction.message.id } })
-                .then(() => {
-                  return starmessage.delete();
-                });
+            if (starmessage) {
+              if (reaction.count > 0) {
+                var starmessageEmbed = starmessage.embeds[0];
+                var times = starmessageEmbed.footer.text.substring(
+                  16,
+                  starmessageEmbed.footer.text.length
+                );
+                times = reaction.count;
+                starmessageEmbed.setFooter(
+                  '⭐ Times starred: ' + times.toString()
+                );
+                return starmessage.edit(starmessageEmbed);
+              } else {
+                prisma.stars
+                  .delete({ where: { messageid: reaction.message.id } })
+                  .then(() => {
+                    return starmessage.delete();
+                  });
+              }
             }
           });
       }
