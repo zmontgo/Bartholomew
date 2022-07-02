@@ -65,6 +65,8 @@ class starboardActions {
 
             prisma.stars.create({ data: starObject }).then(() => {
               return;
+            }).catch(err => {
+              console.error(err)
             });
           });
         }
