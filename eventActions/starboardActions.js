@@ -70,11 +70,14 @@ class starboardActions {
       let result = await prisma.stars.findUnique({ where: { messageid: reaction.message.id }});
 
       if (result !== null) {
+
         const starchannel = await client.channels.cache
           .get(config.channels.starchannel);
 
         starchannel.messages.fetch(result.embedid)
           .then((starmessage) => {
+            console.log(starmessage)
+            
             if (reaction.count > 0) {
               var starmessageEmbed = new Discord.MessageEmbed(starmessage.embeds[0]);
               var times = starmessageEmbed.footer.text.substring(
