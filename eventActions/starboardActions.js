@@ -43,8 +43,8 @@ class starboardActions {
           channel.send({ embeds: [starBoardMessage] }).then((sentmessage) => {
             let starObject = {
               messageid: reaction.message.id,
-              embedID: sentmessage.id,
-              messageChannelID: reaction.message.channel.id,
+              embedid: sentmessage.id,
+              messageChannelid: reaction.message.channel.id,
             };
 
             prisma.stars.create({data: starObject}).then(() => {
@@ -57,7 +57,7 @@ class starboardActions {
           (channel) => config.channels.starchannel === channel.id
         );
 
-        starchannel.messages.fetch(result.embedID).then(async (starmessage) => {
+        starchannel.messages.fetch(result.embedid).then(async (starmessage) => {
           var starmessageEmbed = starmessage.embeds[0];
           var times = reaction.count;
           starmessageEmbed.setFooter('⭐ Times starred: ' + times.toString());
@@ -74,7 +74,7 @@ class starboardActions {
       if (result !== null) {
         client.channels.cache
           .get(config.channels.starchannel)
-          .messages.fetch(result.embedID)
+          .messages.fetch(result.embedid)
           .then((starmessage) => {
             if (reaction.count > 0) {
               var starmessageEmbed = starmessage.embeds[0];
@@ -103,7 +103,7 @@ class starboardActions {
     if (result !== null) {
       client.channels.cache
         .get(config.channels.starchannel)
-        .messages.fetch(result.embedID)
+        .messages.fetch(result.embedid)
         .then((starmessage) => {
           prisma.stars.delete({ where: { messageid: message.id} }).then((_) => {
             return starmessage.delete();
@@ -111,12 +111,12 @@ class starboardActions {
         });
     }
 
-    result = await prisma.stars.findUnique({ where: { embedID: message.id }});
+    result = await prisma.stars.findUnique({ where: { embedid: message.id }});
 
     if (result !== null) {
-      prisma.stars.delete({where: { embedID: message.id} }).then(
+      prisma.stars.delete({where: { embedid: message.id} }).then(
         client.channels.cache
-          .get(result.messageChannelID)
+          .get(result.messageChannelid)
           .messages.fetch(result.messageid)
           .then((starmessage) => {
             starmessage.reactions.removeAll();
