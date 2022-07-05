@@ -86,8 +86,13 @@ class countingActions {
       position++;
     }
 
+    console.log(`Position: ${position}`)
+    console.log(`Leaderboard: ${allUsers.length}`)
+    
     const percentage = ((config.countWeight) * ((Math.pow(2, position)) / (Math.pow(2, allUsers.length)) )) + (1 - config.countWeight);
-    const next = lastNumber.next - Math.floor(percentage * lastNumber.next);
+    console.log(`Percentage: ${percentage}`)
+    const next = lastNumber.next - Math.floor(percentage * lastNumber.next)
+    console.log(`Removed: ${Math.floor(percentage * lastNumber.next)}`);
 
     return next < 1 ? 1 : next;
   }
