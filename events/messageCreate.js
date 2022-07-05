@@ -2,6 +2,7 @@ const config = require('../config.json');
 const afkAction = require('../eventActions/afkMessageCheckAction');
 const reactions = require('../eventActions/reactions');
 const cafeActions = require('../eventActions/cafeActions');
+const countingActions = require("../eventActions/countingActions");
 
 module.exports = async (client, message) => {
   if (!message.guild || message.author.bot) return;
@@ -22,6 +23,7 @@ module.exports = async (client, message) => {
   }
 
   // Handle greetings
+  countingActions.checkNumber(client, message);
   cafeActions.greetMorningOrNight(client, message);
   cafeActions.holidayReacts(client, message);
   reactions.checkIfCorrect(message);

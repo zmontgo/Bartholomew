@@ -76,7 +76,7 @@ class starboardActions {
 
         starchannel.messages.fetch(result.embedid)
           .then(async (starmessage) => {
-            if (reaction.count > 0) {
+            if (reaction.count > config.min_stars) {
               var starmessageEmbed = new Discord.MessageEmbed(starmessage.embeds[0]);
               var times = starmessageEmbed.footer.text.substring(
                 16,
