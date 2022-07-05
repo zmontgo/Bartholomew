@@ -36,6 +36,12 @@ class countingActions {
     }
   }
 
+  static async mendBroken(client, message) {
+    if (message.channel.id === config.channels.counting) {
+      const number = parseInt(message.content);
+    }
+  }
+
   static async getLatest(server, valid) {
     if (valid) {
       return await prisma.count.findFirst({

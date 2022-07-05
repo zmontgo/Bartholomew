@@ -42,7 +42,7 @@ module.exports.execute = async (client, message) => {
 
 module.exports.config = {
   name: 'countingstats',
-  aliases: ['counting'],
+  aliases: ['stats'],
   module: 'Counting',
   description: 'Check on general counting stats about the server.',
   usage: ['countingstats'],
