@@ -36,7 +36,7 @@ class countingActions {
     }
   }
 
-  static async mendBroken(client, message) {
+  static async mendBroken(client, message, action) {
     if (message.channel.id === config.channels.counting) {
       const number = parseInt(message.content);
 
@@ -50,8 +50,8 @@ class countingActions {
         }
       })
 
-      if (lastDatabase.number === number ) {
-        return await message.channel.send(`:warning: <@${lastDatabase.user}> deleted their last number. The next number is **${lastDatabase.next}**.`)
+      if (lastDatabase.number === number) {
+        return await message.channel.send(`:warning: <@${lastDatabase.user}> ${action} their last number. The next number is **${lastDatabase.next}**.`)
       }
     }
   }

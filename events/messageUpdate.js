@@ -1,4 +1,5 @@
 const messageUpdateActions = require('../eventActions/messageUpdateActions');
+const countingActions = require("../eventActions/countingActions");
 
 module.exports = async (client, oldMessage, newMessage) => {
   try {
@@ -15,4 +16,6 @@ module.exports = async (client, oldMessage, newMessage) => {
   }
 
   //messageUpdateActions.sendMessageToModeration(client, oldMessage, newMessage);
+
+  countingActions.mendBroken(client, oldMessage, "edited");
 };
