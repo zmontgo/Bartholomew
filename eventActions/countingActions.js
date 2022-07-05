@@ -10,18 +10,18 @@ class countingActions {
       const lastNumber = await this.getLatest(message.guildId, false);
 
       if (isNaN(number) || number < 1) {
-        await this.killCount(-1, message)
+        const next = await this.killCount(-1, message)
         return await message.channel.send(`Oops! Looks like <@${message.author.id}> reset the count by sending invalid text! The next number is **${next}**!`)
       };
 
       try {
         if (lastNumber.next !== number) {
-          await this.killCount(number, message);
+          const next = await this.killCount(number, message);
           return await message.channel.send(`Oops! Looks like <@${message.author.id}> reset the count by breaking the streak! The next number is **${next}**!`);
         }
 
         if (lastNumber.user === message.author.id) {
-          await this.killCount(number, message);
+          const next = await this.killCount(number, message);
           return await message.channel.send(`Oops! Looks like <@${message.author.id}> reset the count by sending two numbers in a row! The next number is **${next}**!`)
         }
       } catch {}
@@ -29,10 +29,10 @@ class countingActions {
 
       await this.putLatest(number, message.author.id, message.guildId, false);
 
-      if (number % 10000 === 0) return message.react("🏅");
-      if (number % 1000 === 0) return message.react("🌠");
-      if (number % 100 === 0) return message.react("💯");
-      return message.react("✅")
+      if (number % 10000 === 0) return await message.react("🏅");
+      if (number % 1000 === 0) return await message.react("🌠");
+      if (number % 100 === 0) return await message.react("💯");
+      return await message.react("✅")
     }
   }
 
@@ -110,7 +110,9 @@ class countingActions {
   static async killCount(number, message) {
     const next = await this.putLatest(number, message.author.id, message.guildId, true);
 
-    return await message.react("❌");
+    await message.react("❌")
+
+    return next;
   }
 }
 
