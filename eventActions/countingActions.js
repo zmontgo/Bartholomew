@@ -28,6 +28,10 @@ class countingActions {
 
 
       await this.putLatest(number, message.author.id, message.guildId, false);
+
+      if (number % 10000 === 0) return message.react("🏅");
+      if (number % 1000 === 0) return message.react("🌠");
+      if (number % 100 === 0) return message.react("💯");
       return message.react("✅")
     }
   }
