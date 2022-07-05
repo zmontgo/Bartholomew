@@ -71,13 +71,16 @@ module.exports.execute = async (client, message, args) => {
   if (users && users.length > 0) {
     leaderboardEmbed.description = `Using the ${method} metric. You only earn points on the leaderboard for messages that do not break the streak.`
     
-    await message.guild.members.fetch();
+    const guild = message.guild;
+    await guild.members.fetch();
 
     var i = 0;
     
     for await (const user of users) {
-      const userName = await message.guild.members.fetch(user.user);
-      if (userName) {
+      try {
+        // This throws if the user isn't found. Problem?
+        const userName = await guild.members.fetch(user.user);
+
         i++;
 
         if (method === "count") {
@@ -97,7 +100,7 @@ module.exports.execute = async (client, message, args) => {
             }
           );
         }
-      }
+      } catch {}
     }
   }
 
