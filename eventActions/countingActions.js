@@ -20,10 +20,10 @@ class countingActions {
           return await message.channel.send(`Oops! Looks like <@${message.author.id}> reset the count by breaking the streak! The next number is **${next}**!`);
         }
 
-        /*if (lastNumber.user === message.author.id) {
+        if (lastNumber.user === message.author.id) {
           const next = await this.killCount(number, message);
           return await message.channel.send(`Oops! Looks like <@${message.author.id}> reset the count by sending two numbers in a row! The next number is **${next}**!`)
-        }*/
+        }
       } catch {}
 
 
