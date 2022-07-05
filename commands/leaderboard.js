@@ -31,11 +31,11 @@ module.exports.execute = async (client, message, args) => {
         server: message.guildId
       },
       _count: {
-        message: true,
+        number: true,
       },
       orderBy: {
         _count: {
-          message: 'desc'
+          number: 'desc'
         }
       },
       take: 10,
@@ -51,11 +51,11 @@ module.exports.execute = async (client, message, args) => {
         server: message.guildId
       },
       _sum: {
-        message: true,
+        number: true,
       },
       orderBy: {
         _sum: {
-          message: 'desc'
+          number: 'desc'
         }
       },
       take: 10,

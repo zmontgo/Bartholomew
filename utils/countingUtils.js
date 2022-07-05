@@ -27,11 +27,11 @@ module.exports = {
         server: server
       },
       _count: {
-        message: true,
+        number: true,
       },
       orderBy: {
         _count: {
-          message: 'asc'
+          number: 'asc'
         }
       }
     });
@@ -68,11 +68,11 @@ module.exports = {
         server: server
       },
       _count: {
-        message: true,
+        number: true,
       },
       orderBy: {
         _count: {
-          message: 'asc'
+          number: 'asc'
         }
       }
     });
@@ -103,7 +103,7 @@ module.exports = {
         broke: false
       },
       orderBy: {
-        message: "desc"
+        number: "desc"
       }
     })
 
