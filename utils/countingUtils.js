@@ -54,6 +54,7 @@ module.exports = {
     const broken = await prisma.count.count({
       where: {
         server: server,
+        user: userid,
         broke: true
       }
     });
