@@ -1,11 +1,49 @@
+const countingUtils = require("../utils/countingUtils")
+const Discord = require("discord.js")
+const config = require("../config.json")
+
 module.exports.execute = async (client, message) => {
-  return await message.channel.send('Hey there!');
+  const data = await countingUtils.getGuildData(message.guild.id);
+
+  if (!data)
+    return await message.channel.send(':x: No data found for this guild!');
+
+  const [sum, broken, weight, leaderboard_count] = data;
+
+  let rankEmbed = new Discord.MessageEmbed();
+  rankEmbed.color = config.colors.embedColor;
+  rankEmbed.title = 'Server Meditation Stats';
+  rankEmbed.fields.push(
+    {
+      name: 'Total Numbers Posted',
+      value: `\`\`\`${sum}\`\`\``,
+      inline: false,
+    },
+    {
+      name: 'Streak Broken',
+      value: `\`\`\`${broken}\`\`\``,
+      inline: false,
+    },
+    {
+      name: 'Weight',
+      value: `\`\`\`${weight}\`\`\``,
+      inline: false,
+    },
+    {
+      name: 'Leaderboard Size',
+      value: `\`\`\`${leaderboard_count}\`\`\``,
+      inline: false,
+    }
+    
+  );
+
+  return await message.channel.send({ embeds: [rankEmbed] });
 };
 
 module.exports.config = {
-  name: 'hello',
-  aliases: ['hey', 'greetings'],
-  module: 'Utility',
-  description: 'Says hello. Use to test if bot is online.',
-  usage: ['hello'],
+  name: 'countingstats',
+  aliases: ['counting'],
+  module: 'Counting',
+  description: 'Check on general counting stats about the server.',
+  usage: ['countingstats'],
 };
