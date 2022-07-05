@@ -87,7 +87,7 @@ module.exports.execute = async (client, message, args) => {
           leaderboardEmbed.fields.push(
             {
               name: `#${i} - ${userName.user.username}#${userName.user.discriminator}`,
-              value: `\`\`\`${user._count.message}\`\`\``,
+              value: `\`\`\`${user._count.number}\`\`\``,
               inline: false,
             }
           );
@@ -95,7 +95,7 @@ module.exports.execute = async (client, message, args) => {
           leaderboardEmbed.fields.push(
             {
               name: `#${i} - ${userName.user.username}#${userName.user.discriminator}`,
-              value: `\`\`\`${user._sum.message}\`\`\``,
+              value: `\`\`\`${user._sum.number}\`\`\``,
               inline: false,
             }
           );

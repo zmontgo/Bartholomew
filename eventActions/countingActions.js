@@ -20,14 +20,14 @@ class countingActions {
           return await message.channel.send(`Oops! Looks like <@${message.author.id}> reset the count by breaking the streak! The next number is **${next}**!`);
         }
 
-        if (lastNumber.user === message.author.id) {
+        /*if (lastNumber.user === message.author.id) {
           const next = await this.killCount(number, message);
           return await message.channel.send(`Oops! Looks like <@${message.author.id}> reset the count by sending two numbers in a row! The next number is **${next}**!`)
-        }
+        }*/
       } catch {}
 
 
-      await this.putLatest(number, message.author.id, message.guildId, false);
+      await this.putLatest(number, message.author.id, message.id, message.guildId, false);
 
       if (number % 10000 === 0) return await message.react("🏅");
       if (number % 1000 === 0) return await message.react("🌠");
@@ -39,6 +39,20 @@ class countingActions {
   static async mendBroken(client, message) {
     if (message.channel.id === config.channels.counting) {
       const number = parseInt(message.content);
+
+      const lastDatabase = await prisma.count.findFirst({
+        where: {
+          server: message.guildId,
+          message: message.id
+        },
+        orderBy: {
+          date: 'asc'
+        }
+      })
+
+      if (lastDatabase.number === number ) {
+        return await message.channel.send(`:warning: <@${lastDatabase.user}> deleted their last number. The next number is **${lastDatabase.next}**.`)
+      }
     }
   }
 
@@ -65,7 +79,7 @@ class countingActions {
     }
   }
 
-  static async putLatest(number, user, server, broke) {
+  static async putLatest(number, user, message, server, broke) {
     var next = number + 1;
     if (broke) {
       const lastNumber = await this.getLatest(server, false);
@@ -74,8 +88,9 @@ class countingActions {
 
     await prisma.count.create({
       data: {
-        message: number > Number.MAX_SAFE_INTEGER ? -1 : number,
+        number: number > Number.MAX_SAFE_INTEGER ? -1 : number,
         user: user,
+        message: message,
         server: server,
         next: next,
         broke: broke
@@ -114,7 +129,7 @@ class countingActions {
   }
 
   static async killCount(number, message) {
-    const next = await this.putLatest(number, message.author.id, message.guildId, true);
+    const next = await this.putLatest(number, message.author.id, message.id, message.guildId, true);
 
     await message.react("❌")
 

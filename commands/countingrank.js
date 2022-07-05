@@ -95,7 +95,7 @@ module.exports.execute = async (client, message, args) => {
     var day = date.getUTCDate();
     var year = date.getUTCFullYear();
 
-    latest = `**${latest.message === -1 ? "Invalid Number" : latest.message}** on ${months[month]} ${ordinalSuffix(day)}, ${year}`
+    latest = `**${latest.number === -1 ? "Invalid Number" : latest.number}** on ${months[month]} ${ordinalSuffix(day)}, ${year}`
 
     fields.push({
       name: 'Latest Number',
@@ -113,7 +113,7 @@ module.exports.execute = async (client, message, args) => {
     var day = date.getUTCDate();
     var year = date.getUTCFullYear();
 
-    highest = `**${highest.message === -1 ? "Invalid Number" : highest.message}** on ${months[month]} ${ordinalSuffix(day)}, ${year}`
+    highest = `**${highest.number === -1 ? "Invalid Number" : highest.number}** on ${months[month]} ${ordinalSuffix(day)}, ${year}`
 
     fields.push({
       name: 'Highest Valid Number',
