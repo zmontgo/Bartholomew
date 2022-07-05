@@ -42,10 +42,10 @@ class welcomeActions {
 
   static async joinWelcome(client, member) {
     const embed = new Discord.MessageEmbed()
-      .setAuthor(
-        `${member.user.username}#${member.user.discriminator}`,
-        member.user.displayAvatarURL()
-      )
+      .setAuthor({
+        name: `${member.user.username}#${member.user.discriminator}`,
+        iconUrl: member.user.displayAvatarURL()
+      })
       .setTitle(`Member Joined`)
       .setDescription(
         `${member.user.username}#${member.user.discriminator} joined the server.`

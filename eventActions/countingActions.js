@@ -21,12 +21,12 @@ class countingActions {
     }
   }
 
-  static async getLatest(server, broke) {
-    if (broke) {
+  static async getLatest(server, valid) {
+    if (valid) {
       return await prisma.count.findFirst({
         where: {
           server: server,
-          broke: true
+          broke: false,
         },
         orderBy: [
           { date: 'desc' }
@@ -48,12 +48,12 @@ class countingActions {
     var next = number + 1;
     if (broke) {
       const lastNumber = await this.getLatest(server, false);
-      next = await this.findNext(user, lastNumber);
+      next = await this.findNext(user, server, lastNumber);
     }
 
     await prisma.count.create({
       data: {
-        message: number,
+        message: number > Number.MAX_SAFE_INTEGER ? -1 : number,
         user: user,
         server: server,
         next: next,
@@ -64,13 +64,14 @@ class countingActions {
     return next;
   }
 
-  static async findNext(user, lastNumber) {
+  static async findNext(user, server, lastNumber) {
     const allUsers = await prisma.count.groupBy({
       by: ['user'],
       where: {
         NOT: {
           broke: true,
         },
+        server: server
       },
       _count: {
         message: true,
@@ -85,9 +86,10 @@ class countingActions {
       position++;
     }
 
-    const percentage = ((config.countWeight) * (1/ (2^allUsers.length) ) * (2^position)) + (1 - config.countWeight);
+    const percentage = ((config.countWeight) * ((Math.pow(2, position)) / (Math.pow(2, allUsers.length)) )) + (1 - config.countWeight);
+    const next = lastNumber.next - Math.floor(percentage * lastNumber.next);
 
-    return lastNumber.message - Math.floor(percentage * lastNumber.message);
+    return next < 1 ? 1 : next;
   }
 
   static async killCount(number, message) {
