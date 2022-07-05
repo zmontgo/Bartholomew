@@ -9,10 +9,21 @@ class countingActions {
       // We want the latest number, regardless of whether it broke the streak
       const lastNumber = await this.getLatest(message.guildId, false);
 
-      if (isNaN(number) || number < 1) return this.killCount(-1, message);
+      if (isNaN(number) || number < 1) {
+        await this.killCount(-1, message)
+        return await message.channel.send(`Oops! Looks like <@${message.author.id}> reset the count by sending invalid text! The next number is **${next}**!`)
+      };
 
       try {
-        if (lastNumber.next !== number) return this.killCount(number, message);
+        if (lastNumber.next !== number) {
+          await this.killCount(number, message);
+          return await message.channel.send(`Oops! Looks like <@${message.author.id}> reset the count by breaking the streak! The next number is **${next}**!`);
+        }
+
+        if (lastNumber.user === message.author.id) {
+          await this.killCount(number, message);
+          return await message.channel.send(`Oops! Looks like <@${message.author.id}> reset the count by sending two numbers in a row! The next number is **${next}**!`)
+        }
       } catch {}
 
 
@@ -95,9 +106,7 @@ class countingActions {
   static async killCount(number, message) {
     const next = await this.putLatest(number, message.author.id, message.guildId, true);
 
-    await message.react("❌");
-
-    return await message.channel.send(`Oops! Looks like <@${message.author.id}> reset the count! The next number is **${next}**!`)
+    return await message.react("❌");
   }
 }
 
