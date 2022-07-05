@@ -50,9 +50,6 @@ class countingActions {
         }
       })
 
-      console.log(lastDatabase)
-      console.log(number)
-
       if (lastDatabase.number === number) {
         return await message.channel.send(`:warning: <@${lastDatabase.user}> ${action} their last number. The next number is **${lastDatabase.next}**.`)
       }
