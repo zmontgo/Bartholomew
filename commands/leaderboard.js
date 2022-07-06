@@ -3,10 +3,6 @@ const Discord = require("discord.js")
 const config = require("../config.json");
 const prisma = require("../utils/database");
 
-function getKeyByValue(object, value) {
-  return Object.keys(object).find(key => object[key] === value);
-}
-
 module.exports.execute = async (client, message, args) => {
   var page = 1;
   var method = "count";
@@ -80,7 +76,7 @@ module.exports.execute = async (client, message, args) => {
     }
 
     users = Object.values(temporal)
-    users.sort(function(a,b){return a[1] < b[1]})
+    users.sort(function(a,b){return a[1] - b[1]})
   } else {
     users = await prisma.count.groupBy({
       by: ['user'],
