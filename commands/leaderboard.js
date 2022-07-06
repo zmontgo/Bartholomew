@@ -102,7 +102,7 @@ module.exports.execute = async (client, message, args) => {
 
     var i = 0;
 
-    if (method === "temporal") users.sort();
+    if (method === "temporal") users = users.sort();
     
     for await (const user of users) {
       try {
