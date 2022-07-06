@@ -53,7 +53,7 @@ export class countingActions {
   }
 
   static async typeNumber(client, message, number) {
-    if (getRandom(0, 100) > 95) {
+    if (getRandom(0, 100) > 99) {
       const increaseMessage = await message.channel.send(`${number + 1}`);
       return await this.checkNumber(client, increaseMessage);
     }
