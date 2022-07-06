@@ -154,5 +154,3 @@ export class countingActions {
     return next;
   }
 }
-
-export default countingActions;

@@ -2,7 +2,7 @@
 import config from "../config";
 import Discord from "discord.js";
 
-class backspeakCheckAction {
+export class backspeakCheckAction {
   static async checkReport(client, user, reaction) {
     var message = reaction.message;
 
@@ -44,5 +44,3 @@ class backspeakCheckAction {
     }
   }
 }
-
-export default backspeakCheckAction;

@@ -39,7 +39,7 @@ export const countingUtils = {
     return [sum, broken, weight, allUsers.length];
   },
 
-  async getUserData(userid, server) {
+  async getUserData(userid, server): Promise<(number)[]> {
     const sum = await prisma.count.count({
       where: {
         AND: [{ user: userid }, { server: server }],
@@ -102,6 +102,6 @@ export const countingUtils = {
       },
     });
 
-    return [sum, broken, rank, latest, highest];
+    return [sum, broken, rank, latest ? latest.number : 0, highest ? highest.number : 0];
   },
 };

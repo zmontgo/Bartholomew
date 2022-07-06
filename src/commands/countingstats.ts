@@ -12,7 +12,7 @@ export const execute = async (client, message) => {
 
   let rankEmbed = new Discord.MessageEmbed();
   rankEmbed.color = config.colors.embedColor;
-  rankEmbed.title = "Server Meditation Stats";
+  rankEmbed.title = "Server Counting Stats";
   rankEmbed.fields.push(
     {
       name: "Total Numbers Posted",

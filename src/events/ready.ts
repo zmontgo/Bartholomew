@@ -1,6 +1,6 @@
 import config from "../config";
 
-export default (client) => {
+export = (client) => {
   console.log(
     `Running on ${client.channels.cache.size} channels on ${client.guilds.cache.size} servers.`
   );

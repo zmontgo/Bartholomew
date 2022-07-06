@@ -1,6 +1,6 @@
-import countingActions from "../eventActions/countingActions";
+import { countingActions } from "../eventActions/countingActions";
 
-export default async (client, oldMessage, newMessage) => {
+export = async (client, oldMessage, newMessage) => {
   try {
     // When we receive a message we check if the reaction is partial or not
     if (oldMessage.partial || newMessage.partial) {

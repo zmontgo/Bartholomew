@@ -70,10 +70,12 @@ export const execute = async (client, message, args) => {
       const diff =
         (86400000 * Math.E) / (Date.now() - new Date(entry.date).getTime());
 
-      if (entry.user in temporal) {
-        temporal[entry.user][1] += diff / entry._sum.number;
-      } else {
-        temporal[entry.user] = [entry.user, diff / entry._sum.number];
+      if (entry._sum.number) {
+        if (entry.user in temporal) {
+          temporal[entry.user][1] += diff / entry._sum.number;
+        } else {
+          temporal[entry.user] = [entry.user, diff / entry._sum.number];
+        }
       }
     }
 

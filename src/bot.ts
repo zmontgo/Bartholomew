@@ -2,6 +2,7 @@
 import fs from 'fs';
 import Discord from 'discord.js';
 import config from './config';
+import path from 'path';
 
 const allIntents = new Discord.Intents(32767);
 
@@ -10,7 +11,7 @@ const client = new Discord.Client({
   partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 });
 
-fs.readdir('./events/', (err, files) => {
+fs.readdir(path.join(__dirname, './events/'), (err, files) => {
   if (err) return console.error(err);
   const jsfile = files.filter((f) => f.split('.').pop() === 'js');
   if (jsfile.length <= 0) {
@@ -26,7 +27,7 @@ fs.readdir('./events/', (err, files) => {
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 
-fs.readdir('./commands/', (err, files) => {
+fs.readdir(path.join(__dirname, './commands/'), (err, files) => {
   if (err) console.error(err);
   const jsfile = files
     .filter((t) => !t.includes('.test.'))

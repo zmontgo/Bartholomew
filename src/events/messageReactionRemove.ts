@@ -1,6 +1,6 @@
-import starboardActions from "../eventActions/starboardActions";
+import { starboardActions } from "../eventActions/starboardActions";
 
-export default async (client, reaction, user) => {
+export = async (client, reaction, user) => {
   // When we receive a reaction we check if the reaction is partial or not
   if (reaction.partial) {
     // If the message this reaction belongs to was removed the fetching might result in an API error, which we need to handle

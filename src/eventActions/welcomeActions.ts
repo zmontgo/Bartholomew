@@ -1,7 +1,7 @@
 import Discord from "discord.js";
 import config from "../config";
 
-class welcomeActions {
+export class welcomeActions {
   static async channelWelcome(client, oldMember, newMember) {
     if (
       newMember.roles.cache.some((role) => role.id === config.roles.member) &&
@@ -58,23 +58,27 @@ class welcomeActions {
       .setTitle("🙏 __**Welcome to The Prayer Room Discord Server!**__ 🙏")
       .setDescription(
         "**We've set up a short process to protect our community. It's a three-step process that usually takes less than a minute, we look forward to chatting with you!**"
-      )
-      .addField(
-        "Step One",
-        "Click the `Complete` button at the bottom of the screen. This will allow you to send messages here and allow you to move on to step two."
-      )
-      .addField(
-        "Step Two",
-        `Then, introduce yourself here! Be sure to mention all of the following:
+      );
+    welcomePanel.fields.push(
+      {
+        name: "Step One",
+        value: "Click the `Complete` button at the bottom of the screen. This will allow you to send messages here and allow you to move on to step two.",
+        inline: false
+      },
+      {
+        name: "Step Two",
+        value: `Then, introduce yourself here! Be sure to mention all of the following:
 > • What you'd like to be called.
 > • Your age (or whether you're over or under 18).
 > • How you found this server.
-> • What you hope to get out of the community.`
-      )
-      .addField(
-        "Step Three",
-        "Finally, ping the <@&824421461526708304> role to gain the Member role and join the server!"
-      );
+> • What you hope to get out of the community.`,
+        inline: false
+      },
+      {
+        name: "Step Three",
+        value: "Finally, ping the <@&824421461526708304> role to gain the Member role and join the server!",
+        inline: false
+      })
 
     return await member.guild.channels.cache.get(config.channels.gate).send({
       content: `<@!${member.id}>`,
@@ -82,5 +86,3 @@ class welcomeActions {
     });
   }
 }
-
-export default welcomeActions;

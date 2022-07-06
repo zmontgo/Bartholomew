@@ -1,10 +1,10 @@
 import config from "../config";
 import { afkAction } from "../eventActions/afkMessageCheckAction";
-import reactions from "../eventActions/reactions";
-import cafeActions from "../eventActions/cafeActions";
-import countingActions from "../eventActions/countingActions";
+import { reactionCheckAction } from "../eventActions/reactions";
+import { cafeActions } from "../eventActions/cafeActions";
+import { countingActions } from "../eventActions/countingActions";
 
-export default async (client, message) => {
+export = async (client, message) => {
   if (!message.guild || message.author.bot) return;
   const args = message.content.split(/\s+/g); // Return the message content and split the prefix.
   const command =
@@ -26,7 +26,7 @@ export default async (client, message) => {
   countingActions.checkNumber(client, message);
   cafeActions.greetMorningOrNight(client, message);
   cafeActions.holidayReacts(client, message);
-  reactions.checkIfCorrect(message);
+  reactionCheckAction.checkIfCorrect(message);
   afkAction.checkIfUserIsAFK(client, message);
   afkAction.checkForMention(message);
 };

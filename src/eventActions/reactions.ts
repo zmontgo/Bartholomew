@@ -2,7 +2,7 @@ import config from "../config";
 
 const reactions = config.channelReacts;
 
-class reactionCheckAction {
+export class reactionCheckAction {
   static async checkIfCorrect(message) {
     for (var i = 0; i < reactions.length; i++) {
       var obj = reactions[i];
@@ -17,4 +17,3 @@ class reactionCheckAction {
   }
 }
 
-export default reactionCheckAction;

@@ -53,18 +53,22 @@ export class afkAction {
             : message.author.username
         }`
       )
-      .addField("Are you back?", "Run the `.afk` command again in the server.")
       .setFooter({ text: "This message will delete itself after 15 seconds." })
       .setColor(colors.embedColor);
+    noLongerAFKMessage.fields.push({
+      name:"Are you back?",
+      value: "Run the `.afk` command again in the server.",
+      inline: false
+    })
     const user = message.author;
 
     let result = await prisma.afks.findUnique({ where: { user: user.id } });
 
-    if (result !== null && timedifference(result.cooldown, Date.now()) >= 3) {
+    if (result && timedifference(result.cooldown, Date.now()) >= 3) {
       message.author.send({ embeds: [noLongerAFKMessage] }).catch((err) => {
         if (
           err.name == "DiscordAPIError" &&
-          timedifference(result.cooldown, Date.now()) >= 3
+          timedifference(result!.cooldown, Date.now()) >= 3
         ) {
           return message.channel
             .send(
@@ -132,14 +136,24 @@ export class afkAction {
 
       let result = await prisma.afks.findUnique({ where: { user: id } });
 
-      if (result !== null && message.author.id != id) {
+      if (result && message.author.id != id) {
         message.guild.members.fetch(result.user).then((user) => {
           let name = user.nickname ? user.nickname : user.user.username;
           const embed = new MessageEmbed()
             .setTitle(`${name} is not here`)
-            .addField("AFK Message:", result.message)
-            .addField("Went AFK:", timeSince(result.date) + " ago")
             .setColor(colors.embedColor);
+          embed.fields.push(
+            {
+              name: "AFK Message:",
+              value: result!.message,
+              inline: false
+            },
+            {
+              name: "Went AFK:",
+              value: timeSince(result!.date) + " ago",
+              inline: false
+            },
+          )
           message.channel.send(embed);
         });
       }

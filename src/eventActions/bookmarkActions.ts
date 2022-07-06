@@ -1,7 +1,7 @@
 const config = require("../config");
 import Discord from "discord.js";
 
-class bookmarkActions {
+export class bookmarkActions {
   static async bookmarkMessage(user, reaction) {
     if (reaction._emoji && reaction._emoji.id === config.emotes.bookmark) {
       const workingMessage = reaction.message;
@@ -11,29 +11,38 @@ class bookmarkActions {
         .setTitle(`${prayEmote} Prayer Room Server Bookmark ${prayEmote}`)
         .setDescription(
           "You asked to bookmark this post from The Prayer Room server."
-        )
-        .addField("From", workingMessage.author, true)
-        .addField(
-          "Link to Message",
-          `[Jump to Message](${workingMessage.url})`,
-          true
-        )
-        .addField("Channel", workingMessage.channel);
+        );
+      bookmarkEmbed.fields.push(
+        {
+          name: "From",
+          value: workingMessage.author,
+          inline: true
+        },
+        {
+          name: "Link to Message",
+          value: `[Jump to Message](${workingMessage.url})`,
+          inline: true
+        },
+        {
+          name: "Channel",
+          value: workingMessage.channel,
+          inline: false
+        }
+      )
       const messageChunks = workingMessage.content.match(/[\s\S]{1,1024}/g);
 
       for (const chunk of messageChunks) {
-        bookmarkEmbed.addField("Full Message", chunk);
+        bookmarkEmbed.fields.push({name: "Full Message", value: chunk, inline: false});
       }
 
       // Add link to attachment
       if (workingMessage.attachments.array().length > 0) {
-        const attchmnt = workingMessage.attachments.array()[0].url;
-        bookmarkEmbed.addField("Attachment", attchmnt).setImage(attchmnt);
+        const attachment = workingMessage.attachments.array()[0].url;
+        bookmarkEmbed.fields.push({name: "Attachment", value: attachment, inline: false});
+        bookmarkEmbed.setImage(attachment);
       }
 
       user.send({ embeds: [bookmarkEmbed] });
     }
   }
 }
-
-export default bookmarkActions;

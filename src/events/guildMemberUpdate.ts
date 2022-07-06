@@ -1,6 +1,6 @@
-import welcomeActions from "../eventActions/welcomeActions";
+import { welcomeActions } from "../eventActions/welcomeActions";
 
-export default async (client, oldMember, newMember) => {
+export = async (client, oldMember, newMember) => {
   if (newMember.user.bot) return;
 
   welcomeActions.channelWelcome(client, oldMember, newMember);

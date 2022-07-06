@@ -1,7 +1,7 @@
 import { countingUtils } from "../utils/countingUtils";
 import config from "../config";
 import { prisma } from "../utils/database";
-import Discord from "discord.js";
+import Discord, { EmbedField } from "discord.js";
 
 function ordinalSuffix(i) {
   var j = i % 10,
@@ -68,7 +68,12 @@ export const execute = async (client, message, args) => {
   await message.guild.members.fetch();
   const user = client.users.cache.get(get_usr);
 
-  const fields = [
+  let rankEmbed = new Discord.MessageEmbed();
+  rankEmbed.color = config.colors.embedColor;
+  rankEmbed.title = "Counting Stats";
+  rankEmbed.thumbnail = user.avatarURL();
+
+  rankEmbed.fields.push(
     {
       name: "Numbers Posted",
       value: `\`\`\`${sum}\`\`\``,
@@ -84,7 +89,7 @@ export const execute = async (client, message, args) => {
       value: `\`\`\`${rank}\`\`\``,
       inline: false,
     },
-  ];
+  );
 
   if (latest) {
     var months = [
@@ -111,7 +116,7 @@ export const execute = async (client, message, args) => {
       latest.number === -1 ? "Invalid Number" : latest.number
     }** on ${months[month]} ${ordinalSuffix(day)}, ${year}`;
 
-    fields.push({
+    rankEmbed.fields.push({
       name: "Latest Number",
       value: `${latest}`,
       inline: true,
@@ -143,18 +148,12 @@ export const execute = async (client, message, args) => {
       highest.number === -1 ? "Invalid Number" : highest.number
     }** on ${months[month]} ${ordinalSuffix(day)}, ${year}`;
 
-    fields.push({
+    rankEmbed.fields.push({
       name: "Highest Valid Number",
       value: `${highest}`,
       inline: true,
     });
   }
-
-  let rankEmbed = new Discord.MessageEmbed();
-  rankEmbed.color = config.colors.embedColor;
-  rankEmbed.title = "Meditation Stats";
-  rankEmbed.thumbnail = user.avatarURL();
-  rankEmbed.fields.push(...fields);
 
   return message.channel.send({ embeds: [rankEmbed] });
 };

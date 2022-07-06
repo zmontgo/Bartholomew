@@ -1,6 +1,7 @@
 import Discord from "discord.js";
-const config = require("../config");
-const fs = require("fs");
+import config from "../config";
+import fs from "fs";
+
 let prefix;
 if (fs.existsSync("../config")) {
   prefix = require("../config").prefix;
@@ -15,8 +16,9 @@ function capitalizeFLetter(input) {
 export const execute = async (client, message, args) => {
   let commands = client.commands;
   var modules = config.modules;
+  console.log(modules)
   var cleanmodules = modules.map((v) => v.toLowerCase());
-  let commandNames = [];
+  let commandNames: any = [];
 
   if (!args || args.length === 0) {
     var modulelist = "";
@@ -31,7 +33,7 @@ export const execute = async (client, message, args) => {
       modulelist = modulelist.concat(`${module}\n`);
     });
     try {
-      helpMessage.addField(`All Modules`, `${modulelist}`);
+      helpMessage.fields.push({ name: `All Modules`, value: `${modulelist}`, inline: false });
       return await message.channel.send({ embeds: [helpMessage] });
     } catch (err) {
       console.log(err);
@@ -39,8 +41,8 @@ export const execute = async (client, message, args) => {
   } else if (args.length === 1) {
     let command = commands.find(
       (requestedcommand) =>
-        requestedcommand.config.name === args[0].toLowerCase() ||
-        requestedcommand.config.aliases.find(
+        requestedcommand.architecture.name === args[0].toLowerCase() ||
+        requestedcommand.architecture.aliases.find(
           (alias) => alias === args[0].toLowerCase()
         )
     );
@@ -48,22 +50,22 @@ export const execute = async (client, message, args) => {
     if (command) {
       let helpMessage = new Discord.MessageEmbed()
         .setColor(config.colors.embedColor)
-        .setTitle(`${prefix}${command.config.name}`)
+        .setTitle(`${prefix}${command.architecture.name}`)
         .setDescription(
-          `You asked for information on \`${prefix}${command.config.name}\``
+          `You asked for information on \`${prefix}${command.architecture.name}\``
         );
-      helpMessage.addField("Description:", command.config.description);
+      helpMessage.fields.push({name: "Description:", value: command.architecture.description, inline: false});
 
-      if (command.config.aliases && command.config.aliases.length > 0) {
-        const cleanAliases = "`" + command.config.aliases.join("`, `") + "`";
+      if (command.architecture.aliases && command.architecture.aliases.length > 0) {
+        const cleanAliases = "`" + command.architecture.aliases.join("`, `") + "`";
 
-        helpMessage.addField("Aliases:", cleanAliases);
+        helpMessage.fields.push({ name: "Aliases:", value: cleanAliases, inline: false });
       }
 
-      if (command.config.usage && command.config.usage.length > 0) {
-        const cleanUsage = "`" + command.config.usage.join("`, `") + "`";
+      if (command.architecture.usage && command.architecture.usage.length > 0) {
+        const cleanUsage = "`" + command.architecture.usage.join("`, `") + "`";
 
-        helpMessage.addField("Usage:", cleanUsage);
+        helpMessage.fields.push({ name: "Usage:", value: cleanUsage, inline: false });
       }
 
       try {
@@ -82,13 +84,14 @@ export const execute = async (client, message, args) => {
 
         commands.forEach((requestedcommand) => {
           if (
-            requestedcommand.config.module.toLowerCase() ==
+            requestedcommand.architecture.module.toLowerCase() ==
             args[0].toLowerCase()
           ) {
-            helpMessage.addField(
-              `**${prefix}${requestedcommand.config.name}**`,
-              `${requestedcommand.config.description}`
-            );
+            helpMessage.fields.push({
+              name: `**${prefix}${requestedcommand.architecture.name}**`,
+              value: `${requestedcommand.architecture.description}`,
+              inline: false
+          });
           }
         });
         try {
@@ -105,10 +108,11 @@ export const execute = async (client, message, args) => {
           .setDescription(`You asked for all commands`);
 
         commands.forEach((requestedcommand) => {
-          helpMessage.addField(
-            `**${prefix}${requestedcommand.config.name}**`,
-            `${requestedcommand.config.description}`
-          );
+          helpMessage.fields.push({
+            name: `**${prefix}${requestedcommand.architecture.name}**`,
+            value: `${requestedcommand.architecture.description}`,
+            inline: false
+          });
         });
         try {
           message.channel.send({ embeds: [helpMessage] });
@@ -117,8 +121,8 @@ export const execute = async (client, message, args) => {
         }
       } else {
         commands.forEach((requestedcommand) => {
-          commandNames.push(requestedcommand.config.name);
-          requestedcommand.config.aliases.forEach((alias) =>
+          commandNames.push(requestedcommand.architecture.name);
+          requestedcommand.architecture.aliases.forEach((alias) =>
             commandNames.push(alias)
           );
         });
@@ -130,9 +134,9 @@ export const execute = async (client, message, args) => {
 
 async function didYouMean(commands, search, message) {
   if (!commands.includes(search)) {
-    let score = [];
+    let score: any[] = [];
     let lev = 1000;
-    let str = [];
+    let str: any[] = [];
     for (let command of commands) {
       if (levenshtein(search, command) <= lev) {
         lev = levenshtein(search, command);
@@ -140,7 +144,7 @@ async function didYouMean(commands, search, message) {
       }
     }
     if (str.length > 1) {
-      let arr = [];
+      let arr: any[] = [];
       for (let string of str) {
         arr.push(string.split(""));
       }

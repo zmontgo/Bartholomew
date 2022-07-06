@@ -13,9 +13,19 @@ class updateMessageActions {
           })
           .setTitle(`Message Edited`)
           .setDescription(`Message edited in <#${newMessage.channel.id}>.`)
-          .addField("Previous Content", oldMessage.content)
-          .addField("Current Content", newMessage.content)
           .setColor(config.colors.embedColor);
+        embed.fields.push(
+          {
+            name: "Previous Content",
+            value: oldMessage.content,
+            inline: false
+          },
+          {
+            name: "Current Content",
+            value: newMessage.content,
+            inline: false
+          }
+        )
         client.channels.cache
           .get(config.channels.logs)
           .send({ embeds: [embed] });
@@ -25,5 +35,3 @@ class updateMessageActions {
     }
   }
 }
-
-export default updateMessageActions;

@@ -8,9 +8,23 @@ export const execute = async (client, message, args) => {
     let logMessage = new Discord.MessageEmbed()
       .setColor(config.colors.embedColor)
       .setTitle(`\`.hug\` command deleted`);
-    logMessage.addField("User:", message.author.tag);
-    logMessage.addField("Message:", message.content);
-    logMessage.addField("Channel:", message.channel);
+    logMessage.fields.push(
+      {
+        name: "User:",
+        value: message.author.tag,
+        inline: false
+      },
+      {
+        name: "Message:",
+        value: message.content,
+        inline: false
+      },
+      {
+        name: "Channel:",
+        value: message.channel,
+        inline: false
+      }
+    )
 
     message.delete();
 

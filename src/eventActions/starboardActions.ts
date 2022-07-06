@@ -2,7 +2,7 @@ import Discord from "discord.js";
 import config from "../config";
 import { prisma } from "../utils/database";
 
-class starboardActions {
+export class starboardActions {
   static async addStar(client, user, reaction) {
     if (
       reaction._emoji &&
@@ -141,5 +141,3 @@ class starboardActions {
     }
   }
 }
-
-export default starboardActions;

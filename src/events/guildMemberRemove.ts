@@ -1,7 +1,7 @@
 import config from "../config";
 import Discord from "discord.js";
 
-export default async (client, member) => {
+export = async (client, member) => {
   if (member.user.bot) return;
 
   const embed = new Discord.MessageEmbed()
@@ -41,7 +41,7 @@ export default async (client, member) => {
     embed.setDescription(
       `${member.user.username}#${member.user.discriminator} was kicked by ${kickLog.executor.tag}.`
     );
-    embed.addField("Reason", reason);
+    embed.fields.push({name: "Reason", value: reason, inline: false});
   } else {
     // kick log is not valid
     if (
@@ -55,7 +55,7 @@ export default async (client, member) => {
       embed.setDescription(
         `${member.user.username}#${member.user.discriminator} was banned by ${banLog.executor.tag}.`
       );
-      embed.addField("Reason", reason);
+      embed.fields.push({name: "Reason", value: reason, inline: false});
     }
   }
 
