@@ -64,7 +64,8 @@ module.exports.execute = async (client, message, args) => {
       }
     }
 
-    users = Object.values(temporal).sort();
+    users = Object.values(temporal);
+    users.sort();
   } else {
     users = await prisma.count.groupBy({
       by: ['user'],
