@@ -99,6 +99,8 @@ module.exports.execute = async (client, message, args) => {
     await guild.members.fetch();
 
     var i = 0;
+
+    console.log(users)
     
     for await (const user of users) {
       try {
