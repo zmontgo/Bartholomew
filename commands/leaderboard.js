@@ -3,14 +3,19 @@ const Discord = require("discord.js")
 const config = require("../config.json");
 const prisma = require("../utils/database");
 
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
+
 module.exports.execute = async (client, message, args) => {
   var page = 1;
   var method = "count";
+  const temporal = {};
 
   if (args && args[0]) {
     method = args[0];
     
-    if (method !== "count" && method !== "sum") return await message.channel.send(":x: Invalid method. Please choose either `count` or `sum`.");
+    if (method !== "count" && method !== "sum" && method !== "temporal") return await message.channel.send(":x: Invalid method. Please choose either `count` or `sum`.");
   }
 
   if (args && args[1]) {
@@ -41,6 +46,25 @@ module.exports.execute = async (client, message, args) => {
       take: 10,
       skip: 10 * (page - 1)
     });
+  } else if (method === "temporal") {
+
+    users = await prisma.count.findMany({
+      where: {
+        server: message.guildId
+      }
+    });
+
+    for await (const entry of users) {
+      const diff = (Date.now() - new Date(entry.date)) / (1000 * 60 * 60 * 24);
+
+      if (entry.user in temporal) {
+        temporal[entry.user] += (entry.number / diff);
+      } else {
+        temporal[entry.user] = (entry.number / diff);
+      }
+    }
+
+    users = Object.values(temporal).sort();
   } else {
     users = await prisma.count.groupBy({
       by: ['user'],
@@ -79,7 +103,10 @@ module.exports.execute = async (client, message, args) => {
     for await (const user of users) {
       try {
         // This throws if the user isn't found. Problem?
-        const userName = await guild.members.fetch(user.user);
+        var userId = user.user;
+        if (method === "temporal") userId = getKeyByValue(temporal, user);
+
+        const userName = await guild.members.fetch(userId);
 
         i++;
 
@@ -88,6 +115,14 @@ module.exports.execute = async (client, message, args) => {
             {
               name: `#${i} - ${userName.user.username}#${userName.user.discriminator}`,
               value: `\`\`\`${user._count.number}\`\`\``,
+              inline: false,
+            }
+          );
+        } else if (method === "temporal") {
+          leaderboardEmbed.fields.push(
+            {
+              name: `#${i} - ${userName.user.username}#${userName.user.discriminator}`,
+              value: `\`\`\`${Math.floor(user) / 100}\`\`\``,
               inline: false,
             }
           );
@@ -111,6 +146,6 @@ module.exports.config = {
   name: 'leaderboard',
   aliases: [],
   module: 'Counting',
-  description: 'Shows the leaderboard for the counting channel. You may optionally include a page number and a metric.\nThe default is page one and the "count" metric, which counts numbers written, as opposed to "sum", which is the sum of the numbers the user posted. It is required to include a metric if you want to specify a page number.',
-  usage: ['leaderboard [count | sum] [page]'],
+  description: 'Shows the leaderboard for the counting channel. You may optionally include a page number and a metric.\nThe default is page one and the "count" metric, which counts numbers written, as opposed to "sum", which is the sum of the numbers the user posted. There is also temporal, which goes down as time passes. It is required to include a metric if you want to specify a page number.',
+  usage: ['leaderboard [count | sum | temporal] [page]'],
 };
