@@ -7,7 +7,10 @@
     "node": ">=16.13.0"
   },
   "scripts": {
-    "prettier": "prettier --write package.json **/*.js"
+    "build": "rm -rf dist && tsc",
+    "start": "tsc && node dist/bot.js",
+    "watch": "tsc-watch --noClear -p tsconfig.json --onSuccess 'node dist/bot.js'",
+    "prettier": "prettier --write package.json tsconfig.json src/**/*.ts"
   },
   "prisma": {
     "schema": "database/schema.prisma"
