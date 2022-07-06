@@ -15,7 +15,7 @@ module.exports.execute = async (client, message, args) => {
   if (args && args[0]) {
     method = args[0];
     
-    if (method !== "count" && method !== "sum") return await message.channel.send(":x: Invalid method. Please choose either `count` or `sum`.");
+    if (method !== "count" && method !== "sum" && method !== "temporal") return await message.channel.send(":x: Invalid method. Please choose either `count` or `sum`.");
   }
 
   if (args && args[1]) {
@@ -46,6 +46,41 @@ module.exports.execute = async (client, message, args) => {
       take: 10,
       skip: 10 * (page - 1)
     });
+  } else if (method === "temporal") {
+    const groups = await prisma.count.groupBy({
+      by: ['user', "date"],
+      where: {
+        NOT: {
+          broke: true,
+        },
+        server: message.guildId
+      },
+      _sum: {
+        number: true,
+      },
+      orderBy: {
+        _sum: {
+          number: 'desc'
+        }
+      },
+    });
+
+    for await (const entry of groups) {
+      // Because I wanted to
+      const diff = Math.E / ((Date.now() - (new Date(entry.date))) / (1000 * 60 * 60 * 24));
+
+      if (entry.user in temporal) {
+        temporal[entry.user][1] += 1 / (entry._sum.number / diff);
+      } else {
+        temporal[entry.user] = [
+          entry.user,
+          1 / (entry._sum.number / diff)
+        ]
+      }
+    }
+
+    users = Object.values(temporal)
+    users.sort(function(a,b){return a[1] < b[1]})
   } else {
     users = await prisma.count.groupBy({
       by: ['user'],
@@ -85,6 +120,7 @@ module.exports.execute = async (client, message, args) => {
       try {
         // This throws if the user isn't found. Problem?
         var userId = user.user;
+        if (method === "temporal") userId = user[0];
 
         const userName = await guild.members.fetch(userId);
 
@@ -95,6 +131,14 @@ module.exports.execute = async (client, message, args) => {
             {
               name: `#${i} - ${userName.user.username}#${userName.user.discriminator}`,
               value: `\`\`\`${user._count.number}\`\`\``,
+              inline: false,
+            }
+          );
+        } else if (method === "temporal") {
+          leaderboardEmbed.fields.push(
+            {
+              name: `#${i} - ${userName.user.username}#${userName.user.discriminator}`,
+              value: `\`\`\`${Math.floor(user[1] * 10000) / 1000000}\`\`\``,
               inline: false,
             }
           );
