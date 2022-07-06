@@ -64,7 +64,7 @@ module.exports.execute = async (client, message, args) => {
       }
     }
 
-    users = Object.values(temporal);
+    users = Object.values(temporal).map((x) => { return Math.floor(x) });
     users.sort();
   } else {
     users = await prisma.count.groupBy({
@@ -101,7 +101,6 @@ module.exports.execute = async (client, message, args) => {
 
     var i = 0;
 
-    console.log(users)
     
     for await (const user of users) {
       try {
@@ -125,7 +124,7 @@ module.exports.execute = async (client, message, args) => {
           leaderboardEmbed.fields.push(
             {
               name: `#${i} - ${userName.user.username}#${userName.user.discriminator}`,
-              value: `\`\`\`${Math.floor(user) / 100}\`\`\``,
+              value: `\`\`\`${user / 100}\`\`\``,
               inline: false,
             }
           );
