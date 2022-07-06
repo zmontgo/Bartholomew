@@ -1,4 +1,4 @@
-const config = require("../config");
+import config from "../config";
 import Discord from "discord.js";
 
 export class bookmarkActions {

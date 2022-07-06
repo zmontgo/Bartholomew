@@ -1,6 +1,10 @@
 import config from "../config";
 import { prisma } from "../utils/database";
 
+function getRandom(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
 export class countingActions {
   static async checkNumber(client, message) {
     if (message.channel.id === config.channels.counting) {
@@ -43,7 +47,15 @@ export class countingActions {
       if (number % 10000 === 0) return await message.react("🏅");
       if (number % 1000 === 0) return await message.react("🌠");
       if (number % 100 === 0) return await message.react("💯");
-      return await message.react("✅");
+      await message.react("✅");
+      return await this.typeNumber(client, message, number);
+    }
+  }
+
+  static async typeNumber(client, message, number) {
+    if (getRandom(0, 100) > 95) {
+      const increaseMessage = await message.channel.send(`${number + 1}`);
+      return await this.checkNumber(client, increaseMessage);
     }
   }
 
