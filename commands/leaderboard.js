@@ -162,6 +162,6 @@ module.exports.config = {
   name: 'leaderboard',
   aliases: [],
   module: 'Counting',
-  description: 'Shows the leaderboard for the counting channel. You may optionally include a page number and a metric.\nThe default is page one and the "count" metric, which counts numbers written, as opposed to "sum", which is the sum of the numbers the user posted. It is required to include a metric if you want to specify a page number.',
-  usage: ['leaderboard [count | sum] [page]'],
+  description: 'Shows the leaderboard for the counting channel. You may optionally include a page number and a metric.\nThe default is page one and the "count" metric, which counts numbers written, as opposed to "sum", which is the sum of the numbers the user posted. Finally, there is the temporal metric, which goes down over time. It is required to include a metric if you want to specify a page number.',
+  usage: ['leaderboard [count | sum | temporal] [page]'],
 };
