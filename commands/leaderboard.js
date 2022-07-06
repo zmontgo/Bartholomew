@@ -63,14 +63,14 @@ module.exports.execute = async (client, message, args) => {
 
     for await (const entry of groups) {
       // Because I wanted to
-      const diff = Math.E / ((Date.now() - (new Date(entry.date))) / (1000 * 60 * 60 * 24));
+      const diff = (86400000 * Math.E) / (Date.now() - new Date(entry.date));
 
       if (entry.user in temporal) {
-        temporal[entry.user][1] += 1 / (entry._sum.number / diff);
+        temporal[entry.user][1] += diff / entry._sum.number;
       } else {
         temporal[entry.user] = [
           entry.user,
-          1 / (entry._sum.number / diff)
+          diff / entry._sum.number
         ]
       }
     }
