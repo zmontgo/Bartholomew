@@ -9,7 +9,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc --skipLibCheck",
     "start": "tsc --skipLibCheck && node dist/bot.js",
-    "watch": "tsc-watch --noClear -p tsconfig.json --onSuccess 'node dist/bot.js'",
+    "watch": "tsc-watch --skipLibCheck --noClear -p tsconfig.json --onSuccess 'node dist/bot.js'",
     "prettier": "prettier --write package.json tsconfig.json src/**/*.ts"
   },
   "prisma": {
