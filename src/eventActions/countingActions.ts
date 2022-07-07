@@ -64,7 +64,7 @@ export class countingActions {
   static async easterEgg(client, message, number) {
     const count = await this.countValid(message.author.id, message.guildId);
     if (count > 25) {
-      const random = getRandom(0, 1000);
+      const random = getRandom(0, 10000);
       const textChannel = await message.guild.channels.cache.get(config.channels.countingMessages);
 
       if (random < 10) {
