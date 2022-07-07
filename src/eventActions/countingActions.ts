@@ -34,15 +34,15 @@ export class countingActions {
           );
         }
 
-        if (lastNumber && lastNumber.user === message.author.id) {
-          const [next, killed] = await this.killCount(number, message);
+        // if (lastNumber && lastNumber.user === message.author.id) {
+        //   const [next, killed] = await this.killCount(number, message);
         
-          if (!killed) return;
+        //   if (!killed) return;
         
-          return await message.channel.send(
-            `Oops! Looks like <@${message.author.id}> reset the count by sending two numbers in a row! The next number is **${next}**!`
-          );
-        }
+        //   return await message.channel.send(
+        //     `Oops! Looks like <@${message.author.id}> reset the count by sending two numbers in a row! The next number is **${next}**!`
+        //   );
+        // }
       } catch {}
 
       await this.putLatest(
@@ -92,16 +92,7 @@ export class countingActions {
     if (message.channel.id === config.channels.counting) {
       const number = parseInt(message.content);
 
-      const lastDatabase = await prisma.count.findFirst({
-        where: {
-          server: message.guildId,
-          message: message.id,
-          broke: false
-        },
-        orderBy: {
-          date: "asc",
-        },
-      });
+      const lastDatabase = await this.getLatest(message.guildId, false);
 
       if (lastDatabase && lastDatabase.number === number) {
         return await message.channel.send(
