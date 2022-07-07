@@ -34,15 +34,15 @@ export class countingActions {
           );
         }
 
-        // if (lastNumber && lastNumber.user === message.author.id) {
-        //   const [next, killed] = await this.killCount(number, message);
+        if (lastNumber && lastNumber.user === message.author.id) {
+          const [next, killed] = await this.killCount(number, message);
         
-        //   if (!killed) return;
+          if (!killed) return;
         
-        //   return await message.channel.send(
-        //     `Oops! Looks like <@${message.author.id}> reset the count by sending two numbers in a row! The next number is **${next}**!`
-        //   );
-        // }
+          return await message.channel.send(
+            `Oops! Looks like <@${message.author.id}> reset the count by sending two numbers in a row! The next number is **${next}**!`
+          );
+        }
       } catch {}
 
       await this.putLatest(
