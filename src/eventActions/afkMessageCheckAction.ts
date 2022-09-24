@@ -41,7 +41,7 @@ export class afkAction {
               : message.author.username
           }!`
         )
-        .then((delmessage) => delmessage.delete({ timeout: 5000 }))
+        .then((msg) => setTimeout(() => msg.delete().catch(), 5000))
         .catch("Error sending message.");
     }
 
@@ -74,7 +74,7 @@ export class afkAction {
             .send(
               "Looks like you've disabled private messages! You're currently marked as AFK. If you want to turn off AFK, just use `.afk` again!"
             )
-            .then((msg) => msg.delete({ timeout: 5000 }).catch());
+            .then((msg) => setTimeout(() => msg.delete().catch(), 5000));
         }
 
         console.log("Message error: " + err);
