@@ -1,6 +1,6 @@
 // Get the afk Table stored in the SQLite database
 import config from "../config";
-import Discord from "discord.js";
+import { EmbedBuilder } from "discord.js";
 
 export class backspeakCheckAction {
   static async checkReport(client, user, reaction) {
@@ -10,12 +10,12 @@ export class backspeakCheckAction {
       if (reaction._emoji && reaction._emoji.id === config.emotes.report) {
         await reaction.users.remove(user.id);
         var channel = client.channels.cache.get(message.channel.id);
-        let starBoardMessage = new Discord.MessageEmbed()
+        let starBoardMessage = new EmbedBuilder()
           .setColor(config.colors.embedColor)
-          .setAuthor(
-            `${message.author.username}#${message.author.discriminator}`,
-            message.author.displayAvatarURL()
-          )
+          .setAuthor({
+            name: `${message.author.username}#${message.author.discriminator}`,
+            iconURL: message.author.displayAvatarURL()
+          })
           .setDescription(message.content)
           .setFooter({ text: `Reported in #${channel.name}` })
           .setTimestamp(message.createdAt);
@@ -30,7 +30,7 @@ export class backspeakCheckAction {
       user.send(
         ":x: Error when reporting to staff. Please take a screenshot of the message and DM a staff member."
       );
-      let errorMessage = new Discord.MessageEmbed()
+      let errorMessage = new EmbedBuilder()
         .setColor(config.colors.embedColor)
         .setTitle(`Fatal Error`)
         .setDescription(

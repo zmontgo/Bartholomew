@@ -1,38 +1,27 @@
-export const execute = async (client, message, args) => {
-  function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
-  }
+import { SlashCommandBuilder, type ChatInputCommandInteraction } from "discord.js";
 
-  if (getRandomInt(100) == 99 && typeof args[0] !== "undefined") {
-    if (parseInt(args[0])) {
-      return await message.channel.send(`_Shoots <@${args[0]}> violently._`);
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+export = {
+  data: new SlashCommandBuilder()
+    .setName("shoot")
+    .setDescription("Shoots specified user.")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("User to shoot.")
+        .setRequired(true)
+    ),
+  async execute(interaction: ChatInputCommandInteraction) {
+    const user = interaction.options.getUser("user") || interaction.user;
+    const prob = getRandomInt(100);    
+
+    if (prob == 99) {
+      await interaction.reply(`_Shoots ${user} violently._`);
     } else {
-      var name = args.join(" ");
-      //Replace with mention if possible
-      message.channel.members.forEach((member) => {
-        if (
-          member.displayName.toLowerCase().indexOf(name.toLowerCase()) != -1 ||
-          member.user.username.toLowerCase().indexOf(name.toLowerCase()) != -1
-        )
-          name = "<@" + member.id + ">";
-      });
-      if (name != "@everyone") {
-        return await message.channel.send(`_Shoots ${name} violently._`);
-      } else {
-        return await message.channel.send(`_Genocide._`);
-      }
+      await interaction.reply(`Violence is never the answer. Do... do you need a hug?`);
     }
-  } else {
-    return await message.channel.send(
-      `Violence is never the answer. Do... you need a \`.hug\`?`
-    );
   }
-};
-
-export const architecture = {
-  name: "shoot",
-  aliases: ["gun", "kill"],
-  module: "Fun",
-  description: "Shoots specified user.",
-  usage: ["shoot [user]"],
 };

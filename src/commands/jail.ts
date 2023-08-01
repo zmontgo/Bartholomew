@@ -1,111 +1,32 @@
-import Discord from "discord.js";
+import { EmbedBuilder, SlashCommandBuilder, type ChatInputCommandInteraction } from "discord.js";
 import config from "../config";
 
 const logschannel = config.channels.logs;
 
-export const execute = async (client, message, args) => {
-  try {
-    let logMessage = new Discord.MessageEmbed()
-      .setColor(config.colors.embedColor)
-      .setTitle(`\`.jail\` command deleted`);
-    logMessage.fields.push(
-      {
-        name: "User:",
-        value: message.author.tag,
-        inline: false
-      },
-      {
-        name: "Message:",
-        value: message.content,
-        inline: false
-      },
-      {
-        name: "Channel:",
-        value: message.channel,
-        inline: false
-      },
-    )
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
 
-    message.delete();
+export = {
+  data: new SlashCommandBuilder()
+    .setName("jail")
+    .setDescription("Jails a user.")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("The user you want to jail.")
+        .setRequired(true)
+    ),
+  async execute(interaction: ChatInputCommandInteraction) {
+    const user = interaction.options.getUser("user") || interaction.user;
+    const prob = getRandomInt(100);
 
-    try {
-      message.guild.channels.cache
-        .get(logschannel)
-        .send({ embeds: [logMessage] });
-    } catch (err) {
-      console.log(err);
-    }
-  } catch (err) {
-    console.log("Delete error" + err);
-  }
-
-  function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
-  }
-
-  if (getRandomInt(100) == 99) {
-    var name;
-
-    if (parseInt(args[0])) {
-      return await message.channel.send(
-        `_${args[0]} uses a "get out of jail free" card_`
+    if (prob == 99) {
+      return await interaction.reply(
+        `_${user} uses a "get out of jail free" card_`
       );
     } else {
-      name = args.join(" ");
-      if (name == "") {
-        return await message.channel.send(
-          `_<@${message.author.id}> uses a "get out of jail free" card_`
-        );
-      }
-      //Replace with mention if possible
-      message.channel.members.forEach((member) => {
-        if (
-          member.displayName.toLowerCase().indexOf(name.toLowerCase()) != -1 ||
-          member.user.username.toLowerCase().indexOf(name.toLowerCase()) != -1
-        )
-          name = "<@" + member.id + ">";
-      });
-      if (name != "@everyone") {
-        return await message.channel.send(
-          `_${name} uses a "get out of jail free" card_`
-        );
-      } else {
-        return await message.channel.send(
-          "_Jailbreak! Everyone escapes from jail!_"
-        );
-      }
-    }
-  } else {
-    if (parseInt(args[0])) {
-      return await message.channel.send(`_Puts <@${args[0]}> in jail_`);
-    } else {
-      name = args.join(" ");
-      if (name == "") {
-        return await message.channel.send(
-          `_Puts <@${message.author.id}> in jail._`
-        );
-      }
-      //Replace with mention if possible
-      message.channel.members.forEach((member) => {
-        if (
-          member.displayName.toLowerCase().indexOf(name.toLowerCase()) != -1 ||
-          member.user.username.toLowerCase().indexOf(name.toLowerCase()) != -1
-        )
-          name = "<@" + member.id + ">";
-      });
-      if (name != "@everyone") {
-        return await message.channel.send(`_Puts ${name} in jail._`);
-      } else {
-        return await message.channel.send("_Everyone's in jail now._");
-      }
+      return await interaction.reply(`_Puts ${user} in jail._`);
     }
   }
-};
-
-export const architecture = {
-  name: "jail",
-  aliases: ["lockup", "lock"],
-  module: "Fun",
-  description: "Jails specified user.",
-  usage: ["jail [user]"],
 };

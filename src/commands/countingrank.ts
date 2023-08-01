@@ -1,7 +1,8 @@
 import { countingUtils } from "../utils/countingUtils";
 import config from "../config";
 import { prisma } from "../utils/database";
-import Discord, { EmbedField } from "discord.js";
+import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import type { ChatInputCommandInteraction } from 'discord.js'
 
 function ordinalSuffix(i) {
   var j = i % 10,
@@ -18,150 +19,141 @@ function ordinalSuffix(i) {
   return i + "th";
 }
 
-export const execute = async (client, message, args) => {
-  var get_usr = message.author.id;
+export = {
+  data: new SlashCommandBuilder()
+    .setName('countingrank')
+    .setDescription('Shows your ranking in the counting channel.')
+    .addUserOption(option =>
+      option.setName('user')
+        .setDescription('The user to get the ranking of')
+        .setRequired(false)
+    ),
+  async execute(interaction: ChatInputCommandInteraction) {
+    if (!interaction.guild) return await interaction.reply("This command can only be used in a server.");
 
-  if (args[0]) {
-    get_usr = args[0].match(/\d/g);
+    const user = interaction.options.getUser('user') ?? interaction.user
 
-    if (get_usr === null)
-      return await message.channel.send(
-        ":x: Must be a user mention or user ID."
-      );
-
-    get_usr = get_usr.join("");
-  }
-
-  const result = await prisma.count.findMany({
-    where: {
-      AND: [
+    const result = await prisma.count.findMany({
+      where: {
+        AND: [
+          {
+            user: user.id,
+          },
+          {
+            server: interaction.guild.id,
+          },
+        ],
+      },
+      orderBy: [
         {
-          user: get_usr,
-        },
-        {
-          server: message.guild.id,
+          id: "desc",
         },
       ],
-    },
-    orderBy: [
+      take: 3,
+    });
+
+    if (!result) {
+      return await interaction.reply(
+        `:x: Looks like you don't have any entries in the counting channel! Go to <#${config.channels.counting}`
+      );
+    }
+
+    var [sum, broken, rank] = [0, 0, 0];
+    var latest, highest;
+    const data = await countingUtils.getUserData(user, interaction.guild.id);
+
+    if (data) {
+      [sum, broken, rank, latest, highest] = data;
+    }
+
+    let rankEmbed = new EmbedBuilder();
+    rankEmbed
+      .setColor(config.colors.embedColor)
+      .setTitle("Counting Stats")
+      .setThumbnail(user.avatarURL());
+
+    rankEmbed.addFields(
       {
-        id: "desc",
+        name: "Numbers Posted",
+        value: `\`\`\`${sum}\`\`\``,
+        inline: false,
       },
-    ],
-    take: 3,
-  });
-
-  if (!result) {
-    return await message.channel.send(
-      `:x: Looks like you don't have any entries in the counting channel! Go to <#${config.channels.counting}`
+      {
+        name: "Streak Broken",
+        value: `\`\`\`${broken}\`\`\``,
+        inline: false,
+      },
+      {
+        name: "Rank",
+        value: `\`\`\`${rank}\`\`\``,
+        inline: false,
+      },
     );
+
+    if (latest) {
+      var months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+
+      var date = new Date(latest.date);
+      var month = date.getUTCMonth();
+      var day = date.getUTCDate();
+      var year = date.getUTCFullYear();
+
+      latest = `**${
+        latest.number === -1 ? "Invalid Number" : latest.number
+      }** on ${months[month]} ${ordinalSuffix(day)}, ${year}`;
+
+      rankEmbed.addFields({
+        name: "Latest Number",
+        value: `${latest}`,
+        inline: true,
+      });
+    }
+
+    if (highest) {
+      var months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+
+      var date = new Date(highest.date);
+      var month = date.getUTCMonth();
+      var day = date.getUTCDate();
+      var year = date.getUTCFullYear();
+
+      highest = `**${
+        highest.number === -1 ? "Invalid Number" : highest.number
+      }** on ${months[month]} ${ordinalSuffix(day)}, ${year}`;
+
+      rankEmbed.addFields({
+        name: "Highest Valid Number",
+        value: `${highest}`,
+        inline: true,
+      });
+    }
+
+    return interaction.reply({ embeds: [rankEmbed] });
   }
-
-  var [sum, broken, rank] = [0, 0, 0];
-  var latest, highest;
-  const data = await countingUtils.getUserData(get_usr, message.guild.id);
-
-  if (data) {
-    [sum, broken, rank, latest, highest] = data;
-  }
-
-  await message.guild.members.fetch();
-  const user = client.users.cache.get(get_usr);
-
-  let rankEmbed = new Discord.MessageEmbed();
-  rankEmbed.color = config.colors.embedColor;
-  rankEmbed.title = "Counting Stats";
-  rankEmbed.thumbnail = user.avatarURL();
-
-  rankEmbed.fields.push(
-    {
-      name: "Numbers Posted",
-      value: `\`\`\`${sum}\`\`\``,
-      inline: false,
-    },
-    {
-      name: "Streak Broken",
-      value: `\`\`\`${broken}\`\`\``,
-      inline: false,
-    },
-    {
-      name: "Rank",
-      value: `\`\`\`${rank}\`\`\``,
-      inline: false,
-    },
-  );
-
-  if (latest) {
-    var months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
-    var date = new Date(latest.date);
-    var month = date.getUTCMonth();
-    var day = date.getUTCDate();
-    var year = date.getUTCFullYear();
-
-    latest = `**${
-      latest.number === -1 ? "Invalid Number" : latest.number
-    }** on ${months[month]} ${ordinalSuffix(day)}, ${year}`;
-
-    rankEmbed.fields.push({
-      name: "Latest Number",
-      value: `${latest}`,
-      inline: true,
-    });
-  }
-
-  if (highest) {
-    var months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
-    var date = new Date(highest.date);
-    var month = date.getUTCMonth();
-    var day = date.getUTCDate();
-    var year = date.getUTCFullYear();
-
-    highest = `**${
-      highest.number === -1 ? "Invalid Number" : highest.number
-    }** on ${months[month]} ${ordinalSuffix(day)}, ${year}`;
-
-    rankEmbed.fields.push({
-      name: "Highest Valid Number",
-      value: `${highest}`,
-      inline: true,
-    });
-  }
-
-  return message.channel.send({ embeds: [rankEmbed] });
-};
-
-export const architecture = {
-  name: "countingrank",
-  aliases: ["rank"],
-  module: "Counting",
-  description: "Check on individual counting stats within the server.",
-  usage: ["countingrank [user ID | user mention]"],
 };

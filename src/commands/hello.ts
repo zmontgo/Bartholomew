@@ -1,11 +1,11 @@
-export const execute = async (client, message) => {
-  return await message.channel.send("Hey there!");
-};
+import { SlashCommandBuilder } from "discord.js";
+import type { ChatInputCommandInteraction } from "discord.js";
 
-export const architecture = {
-  name: "hello",
-  aliases: ["hey", "greetings"],
-  module: "Utility",
-  description: "Says hello. Use to test if bot is online.",
-  usage: ["hello"],
+export = {
+  data: new SlashCommandBuilder()
+    .setName("hello")
+    .setDescription("Says hello. Use to test if bot is online. Or when you need a friend."),
+  async execute(interaction: ChatInputCommandInteraction) {
+    return await interaction.reply("Hey there!");
+  },
 };

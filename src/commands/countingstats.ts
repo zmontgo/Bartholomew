@@ -1,48 +1,49 @@
 import { countingUtils } from "../utils/countingUtils";
-import Discord from "discord.js";
+import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import type { ChatInputCommandInteraction } from "discord.js";
 import config from "../config";
 
-export const execute = async (client, message) => {
-  const data = await countingUtils.getGuildData(message.guild.id);
+export = {
+  data: new SlashCommandBuilder()
+    .setName("countingstats")
+    .setDescription("Check on general counting stats about the server."),
+  async execute(interaction: ChatInputCommandInteraction) {
+    if (!interaction.guild) return await interaction.reply("This command can only be used in a server.");
 
-  if (!data)
-    return await message.channel.send(":x: No data found for this guild!");
+    const data = await countingUtils.getGuildData(interaction.guild.id);
 
-  const [sum, broken, weight, leaderboard_count] = data;
+    if (!data)
+      return await interaction.reply(":x: No data found for this server!");
 
-  let rankEmbed = new Discord.MessageEmbed();
-  rankEmbed.color = config.colors.embedColor;
-  rankEmbed.title = "Server Counting Stats";
-  rankEmbed.fields.push(
-    {
-      name: "Total Numbers Posted",
-      value: `\`\`\`${sum}\`\`\``,
-      inline: false,
-    },
-    {
-      name: "Streak Broken",
-      value: `\`\`\`${broken}\`\`\``,
-      inline: false,
-    },
-    {
-      name: "Weight",
-      value: `\`\`\`${weight}\`\`\``,
-      inline: false,
-    },
-    {
-      name: "Leaderboard Size",
-      value: `\`\`\`${leaderboard_count}\`\`\``,
-      inline: false,
-    }
-  );
+    const [sum, broken, weight, leaderboard_count] = data;
 
-  return await message.channel.send({ embeds: [rankEmbed] });
-};
+    let rankEmbed = new EmbedBuilder();
+    rankEmbed
+      .setColor(config.colors.embedColor)
+      .setTitle("Server Counting Stats")
+      .setFields(
+      {
+        name: "Total Numbers Posted",
+        value: `\`\`\`${sum}\`\`\``,
+        inline: false,
+      },
+      {
+        name: "Streak Broken",
+        value: `\`\`\`${broken}\`\`\``,
+        inline: false,
+      },
+      {
+        name: "Weight",
+        value: `\`\`\`${weight}\`\`\``,
+        inline: false,
+      },
+      {
+        name: "Leaderboard Size",
+        value: `\`\`\`${leaderboard_count}\`\`\``,
+        inline: false,
+      }
+    );
 
-export const architecture = {
-  name: "countingstats",
-  aliases: ["stats"],
-  module: "Counting",
-  description: "Check on general counting stats about the server.",
-  usage: ["countingstats"],
+    return await interaction.reply({ embeds: [rankEmbed] });
+  }
 };

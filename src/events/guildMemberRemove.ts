@@ -1,14 +1,14 @@
 import config from "../config";
-import Discord from "discord.js";
+import { EmbedBuilder } from "discord.js";
 
 export = async (client, member) => {
   if (member.user.bot) return;
 
-  const embed = new Discord.MessageEmbed()
-    .setAuthor(
-      `${member.user.username}#${member.user.discriminator}`,
-      member.user.displayAvatarURL()
-    )
+  const embed = new EmbedBuilder()
+    .setAuthor({
+      name: `${member.user.username}#${member.user.discriminator}`,
+      iconURL: member.user.displayAvatarURL()
+    })
     .setTitle(`Member Left`)
     .setDescription(
       `${member.user.username}#${member.user.discriminator} left the server.`
@@ -41,7 +41,7 @@ export = async (client, member) => {
     embed.setDescription(
       `${member.user.username}#${member.user.discriminator} was kicked by ${kickLog.executor.tag}.`
     );
-    embed.fields.push({name: "Reason", value: reason, inline: false});
+    embed.addFields({name: "Reason", value: reason, inline: false});
   } else {
     // kick log is not valid
     if (
@@ -55,7 +55,7 @@ export = async (client, member) => {
       embed.setDescription(
         `${member.user.username}#${member.user.discriminator} was banned by ${banLog.executor.tag}.`
       );
-      embed.fields.push({name: "Reason", value: reason, inline: false});
+      embed.addFields({name: "Reason", value: reason, inline: false});
     }
   }
 

@@ -1,0 +1,37 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Count {
+  id      Int      @id @default(autoincrement())
+
+  number  Int
+  date    DateTime @default(now())
+  user    String
+  message String
+  server  String
+
+  next    Int
+  broke   Boolean
+}
+
+model Afks {
+  id       Int    @id @default(autoincrement())
+  message  String
+  user     String @unique
+  cooldown Int
+  date     Int
+}
+
+model Stars {
+  id               Int    @id @default(autoincrement())
+  messageid        String @unique
+  embedid          String @unique
+  messageChannelid String
+}

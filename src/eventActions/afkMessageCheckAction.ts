@@ -1,6 +1,6 @@
 // Get the afk Table stored in the MongoDB database
 import { prisma } from "../utils/database";
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import config from "../config";
 
 const [prefix, colors] = [config.prefix, config.colors];
@@ -45,7 +45,7 @@ export class afkAction {
         .catch("Error sending message.");
     }
 
-    const noLongerAFKMessage = new MessageEmbed()
+    const noLongerAFKMessage = new EmbedBuilder()
       .setTitle(
         `You are currently AFK, ${
           message.member.nickname
@@ -55,7 +55,7 @@ export class afkAction {
       )
       .setFooter({ text: "This message will delete itself after 15 seconds." })
       .setColor(colors.embedColor);
-    noLongerAFKMessage.fields.push({
+    noLongerAFKMessage.addFields({
       name:"Are you back?",
       value: "Run the `.afk` command again in the server.",
       inline: false
@@ -139,10 +139,10 @@ export class afkAction {
       if (result && message.author.id != id) {
         message.guild.members.fetch(result.user).then((user) => {
           let name = user.nickname ? user.nickname : user.user.username;
-          const embed = new MessageEmbed()
+          const embed = new EmbedBuilder()
             .setTitle(`${name} is not here`)
             .setColor(colors.embedColor);
-          embed.fields.push(
+          embed.addFields(
             {
               name: "AFK Message:",
               value: result!.message,

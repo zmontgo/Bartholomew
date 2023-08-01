@@ -1,75 +1,42 @@
 // Get the afk Table stored in the MongoDB database
 import { prisma } from "../utils/database";
+import { SlashCommandBuilder } from 'discord.js'
+import type { ChatInputCommandInteraction } from 'discord.js'
 
-export const execute = async (client, message, args) => {
-  try {
-    if (
-      message.content.toLowerCase().indexOf("good") != -1 &&
-      message.content.toLowerCase().indexOf("night") != -1 &&
-      message.content.toLowerCase().indexOf("guys") != -1
-    ) {
-      //pass
+export = {
+  data: new SlashCommandBuilder()
+    .setName('afk')
+    .setDescription('Set yourself as AFK')
+    .addStringOption(option =>
+      option.setName('message')
+        .setDescription('The message to display when someone mentions you')
+        .setRequired(false)
+    ),
+  async execute(interaction: ChatInputCommandInteraction) {
+    const afkMessage = interaction.options.getString('message') ?? 'They didn\'t tell us where they went...'
+    const sender = interaction.user
+
+    let result = await prisma.afks.findUnique({ where: { user: sender.id } });
+
+    if (result === null) {
+      const afkObject = {
+        message: afkMessage,
+        user: sender.id,
+        cooldown: Date.now(),
+        date: Date.now(),
+      };
+
+      await prisma.afks.create({ data: afkObject });
+
+      try {
+        await interaction.reply(`I have marked you as AFK, <@${sender.id}>. Anyone who pings you will be notified you are away.\n\`\`\`AFK Message: ${afkMessage}\`\`\``)
+      } catch (err) {
+        console.log(err);
+      }
     } else {
-      message.delete();
+      await prisma.afks.delete({ where: { user: sender.id } });
+
+      await interaction.reply(`Welcome back, <@${sender.id}>! I have removed your AFK status.`)
     }
-  } catch (err) {
-    console.log("Delete error" + err);
-  }
-
-  const sender = message.author;
-
-  var afkMessage;
-
-  if (args[1] == "auto") {
-    afkMessage = args[0];
-  } else if (args.length > 0) {
-    afkMessage = args.join(" ");
-  } else {
-    afkMessage = "They didn't tell us where they went...";
-  }
-
-  let result = await prisma.afks.findUnique({ where: { user: sender.id } });
-
-  if (result === null) {
-    const afkObject = {
-      message: afkMessage,
-      user: sender.id,
-      cooldown: Date.now(),
-      date: Date.now(),
-    };
-
-    await prisma.afks.create({ data: afkObject });
-
-    try {
-      message.channel
-        .send(
-          `I have marked you as AFK, <@${sender.id}>. Anyone who pings you will be notified you are away.\n\`\`\`AFK Message: ${afkMessage}\`\`\``
-        )
-        .then((msg) => setTimeout(() => msg.delete().catch(), 10000));
-    } catch (err) {
-      console.log(err);
-    }
-  } else {
-    await prisma.afks.delete({ where: { user: sender.id } });
-
-    message.channel
-      .send(
-        `Welcome back, ${
-          message.member.nickname
-            ? message.member.nickname
-            : message.author.username
-        }!`
-      )
-      .then((msg) => setTimeout(() => msg.delete().catch(), 5000))
-      .catch("Error sending message.");
-  }
-};
-
-export const architecture = {
-  name: "afk",
-  aliases: ["afk", "away"],
-  module: "Utility",
-  description:
-    "I will mark you as being away. When people tag you, they will be notified that you are not present.",
-  usage: ["afk [message]"],
+  },
 };

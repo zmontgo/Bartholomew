@@ -1,14 +1,10 @@
-export const execute = async (client, message) => {
-  return await message.channel.send(
-    Math.random() < 0.5 ? ":tea:" : ":deciduous_tree:"
-  );
-};
+import { SlashCommandBuilder, type ChatInputCommandInteraction } from "discord.js";
 
-export const architecture = {
-  name: "tea",
-  aliases: ["chai", "tree", "troulette"],
-  module: "Fun",
-  description:
-    "I will choose either :tea: or :deciduous_tree:. (Tea-drinker's version of the coffee command)",
-  usage: ["tea"],
+export = {
+  data: new SlashCommandBuilder()
+    .setName("tea")
+    .setDescription("I will choose either :tea: or :deciduous_tree:. (Tea-drinker's version of the coffee command)"),
+  async execute(interaction: ChatInputCommandInteraction) {
+    return await interaction.reply(Math.random() < 0.5 ? ":tea:" : ":deciduous_tree:");
+  }
 };

@@ -1,4 +1,4 @@
-import Discord from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import config from "../config";
 
 export class welcomeActions {
@@ -41,7 +41,7 @@ export class welcomeActions {
   }
 
   static async joinWelcome(client, member) {
-    const embed = new Discord.MessageEmbed()
+    const embed = new EmbedBuilder()
       .setAuthor({
         name: `${member.user.username}#${member.user.discriminator}`,
         iconURL: member.user.displayAvatarURL(),
@@ -53,13 +53,13 @@ export class welcomeActions {
       .setColor(config.colors.embedColor);
     client.channels.cache.get(config.channels.logs).send({ embeds: [embed] });
 
-    let welcomePanel = new Discord.MessageEmbed()
+    let welcomePanel = new EmbedBuilder()
       .setColor(config.colors.embedColor)
       .setTitle("🙏 __**Welcome to The Prayer Room Discord Server!**__ 🙏")
       .setDescription(
         "**We've set up a short process to protect our community. It's a three-step process that usually takes less than a minute, we look forward to chatting with you!**"
       );
-    welcomePanel.fields.push(
+    welcomePanel.addFields(
       {
         name: "Step One",
         value: "Click the `Complete` button at the bottom of the screen. This will allow you to send messages here and allow you to move on to step two.",

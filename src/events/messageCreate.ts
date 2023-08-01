@@ -1,26 +1,39 @@
-import config from "../config";
+import { readdirSync } from 'fs'
+import path from 'path'
 import { afkAction } from "../eventActions/afkMessageCheckAction";
 import { reactionCheckAction } from "../eventActions/reactions";
 import { cafeActions } from "../eventActions/cafeActions";
 import { countingActions } from "../eventActions/countingActions";
 
 export = async (client, message) => {
-  if (!message.guild || message.author.bot) return;
-  const args = message.content.split(/\s+/g); // Return the message content and split the prefix.
-  const command =
-    message.content.startsWith(config.prefix) &&
-    args.shift().slice(config.prefix.length);
+  if (message.author.bot) return
 
-  if (command) {
-    const commandfile =
-      client.commands.get(command) ||
-      client.commands.get(client.aliases.get(command));
+    const args = message.content.split(/\s+/g)
+    let prefix = '.'
 
-    if (commandfile) {
-      message.channel.sendTyping();
-      commandfile.execute(client, message, args); // Execute found command
+    if (
+      args[0] === `<@!${client.user.id}>` ||
+      message.content.startsWith(`<@!${client.user.id}>`)
+    ) {
+      prefix = `<@!${client.user.id}>`
+      if (args[0] === prefix) {
+        args.shift()
+        args[0] = prefix + args[0] // Dirty fix
+      }
     }
-  }
+
+    const command =
+      message.content.startsWith(prefix) && args.shift().slice(prefix.length).split(' ')[0].toLowerCase()
+
+    if (command) {
+      const commandfile = readdirSync(path.join(__dirname, '../commands/')).filter(file => file.endsWith('.js')).find(file => file === `${command}.js`)
+
+      if (commandfile) {
+        message.channel.sendTyping()
+
+        return await message.channel.send('Message commands have been sunsetted. Please use slash commands instead.')
+      }
+    }
 
   // Handle greetings
   countingActions.checkNumber(client, message);

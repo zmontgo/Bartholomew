@@ -1,12 +1,12 @@
 import config from "../config";
-import Discord from "discord.js";
+import { EmbedBuilder } from "discord.js";
 
 class updateMessageActions {
   static async sendMessageToModeration(client, oldMessage, newMessage) {
     if (oldMessage.channel.id != config.channels.logs) {
       if (oldMessage.embeds.length == 0 && newMessage.embeds.length > 0) return; // Client likely had to fetch an embed from a link
       try {
-        const embed = new Discord.MessageEmbed()
+        const embed = new EmbedBuilder()
           .setAuthor({
             name: `${newMessage.author.username}#${newMessage.author.discriminator}`,
             iconURL: newMessage.author.displayAvatarURL(),
@@ -14,7 +14,7 @@ class updateMessageActions {
           .setTitle(`Message Edited`)
           .setDescription(`Message edited in <#${newMessage.channel.id}>.`)
           .setColor(config.colors.embedColor);
-        embed.fields.push(
+        embed.addFields(
           {
             name: "Previous Content",
             value: oldMessage.content,

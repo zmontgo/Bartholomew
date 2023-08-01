@@ -1,14 +1,15 @@
-export const execute = async (client, message) => {
-  return await message.channel.send(
-    Math.random() < 0.5 ? ":beverage_box:" : ":fox:"
-  );
+import { SlashCommandBuilder, type ChatInputCommandInteraction } from "discord.js";
+
+export = {
+  data: new SlashCommandBuilder()
+    .setName("juice")
+    .setDescription(
+      "I will choose either :beverage_box: or :fox:. (My version of Russian Roulette)"
+    ),
+  async execute(interaction: ChatInputCommandInteraction) {
+    return await interaction.reply(
+      Math.random() < 0.5 ? ":beverage_box:" : ":fox:"
+    );
+  },
 };
 
-export const architecture = {
-  name: "juice",
-  aliases: ["juice", "juicebox", "fox"],
-  module: "Fun",
-  description:
-    "I will choose either :beverage_box: or :fox:. (My version of Russian Roulette)",
-  usage: ["juice"],
-};

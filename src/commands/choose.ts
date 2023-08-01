@@ -1,26 +1,26 @@
-export const execute = async (client, message, args) => {
-  if (args.length) {
-    args = args.join(" ").split(/,+ */);
+import { SlashCommandBuilder } from 'discord.js'
+import type { ChatInputCommandInteraction } from 'discord.js'
+
+export = {
+  data: new SlashCommandBuilder()
+    .setName('choose')
+    .setDescription('I will choose one of your options at random.')
+    .addStringOption(option =>
+      option.setName('options')
+        .setDescription('The options to choose from, separated by commas')
+        .setRequired(true)
+    ),
+  async execute(interaction: ChatInputCommandInteraction) {
+    const args = interaction.options.getString('options')?.split(/,+ */) ?? []
 
     if (args.includes("")) {
-      return await message.channel.send("Choices cannot be empty!");
+      return await interaction.reply("Choices cannot be empty!");
     }
 
     const choiceIndex = Math.floor(Math.random() * args.length);
-    return await message.channel.send(
+    return await interaction.reply(
       "I choose **" + args[choiceIndex] + "**!"
     );
-  }
-
-  return await message.channel.send(
-    "Please specify the options I should choose from!\nHint: `.choose option1, option2, ..., optionX`"
-  );
+  },
 };
 
-export const architecture = {
-  name: "choose",
-  aliases: ["choose", "pick"],
-  module: "Fun",
-  description: "I will choose one of your options at random.",
-  usage: ["choose option1, option2, ..., optionX"],
-};

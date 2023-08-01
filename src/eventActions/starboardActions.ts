@@ -1,4 +1,4 @@
-import Discord from "discord.js";
+import { EmbedBuilder, Embed } from "discord.js";
 import config from "../config";
 import { prisma } from "../utils/database";
 
@@ -23,12 +23,15 @@ export class starboardActions {
 
       if (result === null) {
         if (reaction.count >= config.min_stars) {
-          let starBoardMessage = new Discord.MessageEmbed();
-          starBoardMessage.color = config.colors.embedColor;
-          starBoardMessage.author = { name: username, url: avatar };
-          starBoardMessage.description =
-            message + "\n\n**[Click to jump to message.](" + link + ")**";
-          starBoardMessage.footer = { text: "⭐ Times starred: " + stars };
+          let starBoardMessage = new EmbedBuilder();
+          starBoardMessage
+            .setColor(config.colors.embedColor)
+            .setAuthor({
+              name: username,
+              iconURL: avatar,
+            })
+            .setDescription(message + "\n\n**[Click to jump to message.](" + link + ")**")
+            .setFooter({ text: "⭐ Times starred: " + stars });
 
           if (att.size > 0) {
             const att_arr = Array.from(att, ([name, value]) => value);
@@ -58,14 +61,14 @@ export class starboardActions {
         );
 
         starchannel.messages.fetch(result.embedid).then(async (starmessage) => {
-          var starmessageEmbed = new Discord.MessageEmbed(
+          var starEmbedBuilder = new EmbedBuilder(
             starmessage.embeds[0]
           );
           var times = reaction.count;
-          starmessageEmbed.setFooter({
+          starEmbedBuilder.setFooter({
             text: "⭐ Times starred: " + times.toString(),
           });
-          return await starmessage.edit({ embeds: [starmessageEmbed] });
+          return await starmessage.edit({ embeds: [starEmbedBuilder] });
         });
       }
     }
@@ -84,19 +87,15 @@ export class starboardActions {
 
         starchannel.messages.fetch(result.embedid).then(async (starmessage) => {
           if (reaction.count > config.min_stars) {
-            var starmessageEmbed = new Discord.MessageEmbed(
-              starmessage.embeds[0]
-            );
-            if (starmessageEmbed && starmessageEmbed.footer) {
-              var times = starmessageEmbed.footer.text.substring(
-                16,
-                starmessageEmbed.footer.text.length
-              );
-              times = reaction.count;
-              starmessageEmbed.setFooter({
+            const originalEmbed: Embed = starmessage.embeds[0];
+            const starEmbedBuilder = EmbedBuilder.from(originalEmbed);
+
+            if (originalEmbed && originalEmbed.footer) {
+              const times = reaction.count;
+              starEmbedBuilder.setFooter({
                 text: "⭐ Times starred: " + times.toString(),
               });
-              return await starmessage.edit({ embeds: [starmessageEmbed] });
+              return await starmessage.edit({ embeds: [starEmbedBuilder] });
             }
           } else {
             prisma.stars
