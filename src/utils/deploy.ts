@@ -1,4 +1,4 @@
-import { REST, Collection, Routes } from 'discord.js'
+import { REST, Collection, Routes, type ChatInputCommandInteraction } from 'discord.js'
 import fs from 'fs'
 import path from 'path'
 
@@ -17,16 +17,23 @@ export const deployAppCommands = async (client) => {
       commands.push(command.data.toJSON())
       client.commands.set(command.data.name, {
         data: command.data,
-        async execute (interaction) {
+        async execute (interaction: ChatInputCommandInteraction) {
           try {
             await command.execute(interaction)
           } catch (error: any) {
-            console.error(error)
 
             // Check if the interaction has already been replied to - likely meaning that the error has already been handled
             if (interaction.replied) {
               return
             }
+
+            // Code 40060: Interaction has already been acknowledged
+            if (error.code === 40060) {
+              console.warn(`[WARNING] The interaction with ID ${interaction.id} has already been acknowledged.`)
+              return
+            }
+
+            console.error(error)
 
             await interaction.reply({ content: 'Looks like the bot is having some issues right now. Please try again later.', ephemeral: true })
           }

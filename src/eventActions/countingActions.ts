@@ -24,7 +24,7 @@ export class countingActions {
       }
 
       try {
-        if (lastNumber && lastNumber.next !== number) {
+        if (lastNumber && lastNumber.entry_next_number !== number) {
           const [next, killed] = await this.killCount(number, message);
 
           if (!killed) return;
@@ -34,7 +34,7 @@ export class countingActions {
           );
         }
 
-        if (lastNumber && lastNumber.user === message.author.id) {
+        if (lastNumber && lastNumber.entry_user_id === message.author.id) {
           const [next, killed] = await this.killCount(number, message);
         
           if (!killed) return;
@@ -94,9 +94,9 @@ export class countingActions {
 
       const lastDatabase = await this.getLatest(message.guildId, false);
 
-      if (lastDatabase && lastDatabase.number === number) {
+      if (lastDatabase && lastDatabase.entry_number === number) {
         return await message.channel.send(
-          `:warning: <@${lastDatabase.user}> ${action} their last number. The next number is **${lastDatabase.next}**.`
+          `:warning: <@${lastDatabase.entry_user_id}> ${action} their last number. The next number is **${lastDatabase.entry_next_number}**.`
         );
       }
     }
@@ -104,19 +104,19 @@ export class countingActions {
 
   static async getLatest(server, valid) {
     if (valid) {
-      return await prisma.count.findFirst({
+      return await prisma.countEntry.findFirst({
         where: {
-          server: server,
-          broke: false,
+          entry_guild_id: server,
+          entry_broke_streak: false,
         },
-        orderBy: [{ date: "desc" }],
+        orderBy: [{ entry_datetime: "desc" }],
       });
     } else {
-      return await prisma.count.findFirst({
+      return await prisma.countEntry.findFirst({
         where: {
-          server: server,
+          entry_guild_id: server,
         },
-        orderBy: [{ date: "desc" }],
+        orderBy: [{ entry_datetime: "desc" }],
       });
     }
   }
@@ -128,14 +128,14 @@ export class countingActions {
       next = await this.findNext(user, server, lastNumber);
     }
 
-    const record = await prisma.count.create({
+    const record = await prisma.countEntry.create({
       data: {
-        number: number > Number.MAX_SAFE_INTEGER ? -1 : number,
-        user: user,
-        message: message,
-        server: server,
-        next: next,
-        broke: broke,
+        entry_number: number > Number.MAX_SAFE_INTEGER ? -1 : number,
+        entry_user_id: user,
+        entry_message_id: message,
+        entry_guild_id: server,
+        entry_next_number: next,
+        entry_broke_streak: broke,
       },
     });
 
@@ -143,23 +143,23 @@ export class countingActions {
   }
 
   static async findNext(user, server, lastNumber) {
-    const allUsers = await prisma.count.groupBy({
-      by: ["user"],
+    const allUsers = await prisma.countEntry.groupBy({
+      by: ["entry_user_id"],
       where: {
         NOT: {
-          broke: true,
+          entry_broke_streak: true,
         },
-        server: server,
+        entry_guild_id: server,
       },
       _count: {
-        message: true,
+        entry_message_id: true,
       },
     });
 
     var position = 0;
 
     for await (const a of allUsers) {
-      if (a.user === user) break;
+      if (a.entry_user_id === user) break;
 
       position++;
     }
@@ -174,11 +174,11 @@ export class countingActions {
   }
 
   static async countValid(user, server) {
-    return await prisma.count.count({
+    return await prisma.countEntry.count({
       where: {
-        user: user,
-        server: server,
-        broke: false
+        entry_user_id: user,
+        entry_guild_id: server,
+        entry_broke_streak: false
       }
     })
   }
@@ -200,7 +200,7 @@ export class countingActions {
       if (random < 10 && random > 2) {
         await textChannel.send(`Hey, just a reminder, <@${message.author.id}>, this channel is for counting *up*. :\\)`)
       } else if (random <= 2) {
-        await prisma.count.delete({
+        await prisma.countEntry.delete({
           where: {
             id: latest.id
           }
@@ -210,7 +210,7 @@ export class countingActions {
 
         await message.delete();
 
-        await textChannel.send(`Really <@${message.author.id}>? You broke the streak *again*? I think we should just collectively ignore that.${(lastNumber && lastNumber.next) ? " The next number is " + lastNumber.next + " everyone!": ""} `)
+        await textChannel.send(`Really <@${message.author.id}>? You broke the streak *again*? I think we should just collectively ignore that.${(lastNumber && lastNumber.entry_next_number) ? " The next number is " + lastNumber.entry_next_number + " everyone!": ""} `)
 
         return [next, false];
       } else if (random >= 10 && random <= 40) {

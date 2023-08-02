@@ -25,6 +25,8 @@ export = {
 
     const users = await countingUtils.getLeaderboard(method, page, interaction.guild.id);
 
+    console.log(users)
+
     let leaderboardEmbed = new EmbedBuilder()
       .setColor(config.colors.embedColor)
       .setTitle("Server Counting Leaderboard")
@@ -42,7 +44,7 @@ export = {
         try {
           // This throws if the user isn't found. Problem?
           var userId = user.user;
-          if (method === "temporal") userId = user[0];
+          if (method === "temporal") userId = user.user;
 
           const userName = await guild.members.fetch(userId);
 
@@ -67,7 +69,9 @@ export = {
               inline: false,
             });
           }
-        } catch {}
+        } catch (e) {
+          console.error(e);
+        }
       }
     }
 

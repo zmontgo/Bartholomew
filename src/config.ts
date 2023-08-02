@@ -3,8 +3,8 @@ export default {
   "modules": ["Utility", "Fun", "Games", "Counting"],
   "version": "3.0.0",
   "versioninfo": "Cleaned up a bit behind the scenes, updated version info.",
-  "playing": "this is a really cool status huh? I'm starting to wonder where all these great ideas come from!",
-  "min_stars": 1,
+  "playing": "sudoku",
+  "min_stars": 3,
   "decks": 4,
   "channelReacts": [
     {
@@ -18,10 +18,10 @@ export default {
     "logs": "765306671807332362",
     "cafe": "765226048237076523",
     "gate": "827543849017540638",
-    "starchannel": "820836182043656272",
+    "starchannel": "1136059359797977258",
     "reportchannel": "820836498660261899",
-    "counting": "992895973263159416",
-    "countingMessages": "791366170611679275"
+    "counting": "829021036052742154",
+    "countingMessages": "829473045281767434"
   },
   "emotes": {
     "bookmark": "765308420327735296",

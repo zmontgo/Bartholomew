@@ -33,14 +33,14 @@ export = {
 
     const user = interaction.options.getUser('user') ?? interaction.user
 
-    const result = await prisma.count.findMany({
+    const result = await prisma.countEntry.findMany({
       where: {
         AND: [
           {
-            user: user.id,
+            entry_user_id: user.id,
           },
           {
-            server: interaction.guild.id,
+            entry_guild_id: interaction.guild.id,
           },
         ],
       },

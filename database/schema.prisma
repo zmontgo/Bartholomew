@@ -8,17 +8,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Count {
-  id      Int      @id @default(autoincrement())
+model CountEntry {
+  id Int @id @default(autoincrement())
 
-  number  Int
-  date    DateTime @default(now())
-  user    String
-  message String
-  server  String
+  entry_number     Int
+  entry_datetime   DateTime @default(now())
+  entry_user_id    String
+  entry_message_id String
+  entry_guild_id   String
 
-  next    Int
-  broke   Boolean
+  entry_next_number  Int
+  entry_broke_streak Boolean
 }
 
 model Afks {
