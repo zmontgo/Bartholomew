@@ -6,8 +6,33 @@ type UserTemporalScoreResult = {
   score: number;
 };
 
+type Entry = {
+  id: number;
+  entry_number: number;
+  entry_datetime: Date;
+  entry_user_id: string;
+  entry_message_id: string;
+  entry_guild_id: string;
+  entry_next_number: number;
+  entry_broke_streak: boolean;
+}
+
+type UserData = {
+  sum: number;
+  broken: number;
+  rank: number;
+  latest: Entry | null;
+  highest: Entry | null;
+};
+
+type ServerData = {
+  sum: number;
+  broken: number;
+  leaderboard_length: number;
+};
+
 export const countingUtils = {
-  async getGuildData(server) {
+  async getGuildData(server: string): Promise<ServerData> {
     const sum = await prisma.countEntry.count({
       where: {
         entry_guild_id: server,
@@ -20,8 +45,6 @@ export const countingUtils = {
         entry_broke_streak: true,
       },
     });
-
-    const weight = config.countWeight;
 
     const allUsers = await prisma.countEntry.groupBy({
       by: ["entry_user_id"],
@@ -41,10 +64,14 @@ export const countingUtils = {
       },
     });
 
-    return [sum, broken, weight, allUsers.length];
+    return {
+      sum,
+      broken,
+      leaderboard_length: allUsers.length,
+    };
   },
 
-  async getUserData(userid, server): Promise<(number)[]> {
+  async getUserData(userid: string, server: string): Promise<UserData> {
     const sum = await prisma.countEntry.count({
       where: {
         AND: [{ entry_user_id: userid }, { entry_guild_id: server }],
@@ -77,7 +104,7 @@ export const countingUtils = {
       },
     });
 
-    var rank = 0;
+    var rank = 1;
 
     for await (const a of allUsers) {
       if (a.entry_user_id === userid) break;
@@ -107,7 +134,14 @@ export const countingUtils = {
       },
     });
 
-    return [sum, broken, rank, latest ? latest.entry_number : 0, highest ? highest.entry_number : 0];
+    // return [sum, broken, rank, latest ? latest.entry_number : 0, highest ? highest.entry_number : 0];
+    return {
+      sum,
+      broken,
+      rank,
+      latest: latest,
+      highest: highest,
+    };
   },
 
   async getLeaderboard(method: "count" | "sum" | "temporal", page: number, guild_id: string): Promise<{ user: string; score: number }[]> {

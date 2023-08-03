@@ -1,3 +1,5 @@
+import config from "../config"
+
 export = async (client, interaction) => {
   try {
     if (interaction.isCommand()) {
@@ -9,6 +11,11 @@ export = async (client, interaction) => {
       }
 
       try {
+        if (interaction.channel?.id === config.channels.counting && (!command.config || !command.config.counting)) {
+          await interaction.reply({ content: 'This command cannot be used in the counting channel.', ephemeral: true })
+          return  
+        }
+
         await command.execute(interaction)
       } catch (error: any) {
         console.error(error)

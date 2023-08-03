@@ -1,41 +1,18 @@
 import { countingUtils } from "../utils/countingUtils";
-import { EmbedBuilder, SlashCommandBuilder, type ChatInputCommandInteraction } from "discord.js";
+import { EmbedBuilder, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from "discord.js";
 import config from "../config";
 
-export = {
-  data: new SlashCommandBuilder()
-    .setName("leaderboard")
-    .setDescription("Shows the top 10 counters.")
-    .addStringOption((option) =>
-      option
-        .setName("method")
-        .setDescription("The method to use.")
-        .setRequired(false)
-        .addChoices(
-          { name: "Count", value: "count" },
-          { name: "Sum", value: "sum" },
-          { name: "Temporal", value: "temporal" }
-        )
-    ),
-  async execute(interaction: ChatInputCommandInteraction) {
-    if (!interaction.guild) return await interaction.reply("This command can only be used in a server.");
-
-    const method = (interaction.options.getString("method") || "count") as "count" | "sum" | "temporal";
-    let page = 1;
-
-    const users = await countingUtils.getLeaderboard(method, page, interaction.guild.id);
-
-    console.log(users)
-
-    let leaderboardEmbed = new EmbedBuilder()
+async function createLeaderboard(page: number, method: "temporal", interaction: ChatInputCommandInteraction) {
+  const users = await countingUtils.getLeaderboard(method, page, interaction.guild!.id);
+  let leaderboardEmbed = new EmbedBuilder()
       .setColor(config.colors.embedColor)
       .setTitle("Server Counting Leaderboard")
       .setDescription(`No results found for this page.`);
 
     if (users && users.length > 0) {
-      leaderboardEmbed.setDescription(`Using the ${method} metric. You only earn points on the leaderboard for messages that do not break the streak.`);
+      leaderboardEmbed.setDescription(`You only earn points on the leaderboard for messages that do not break the streak.`);
 
-      const guild = interaction.guild;
+      const guild = interaction.guild!;
       await guild.members.fetch();
 
       var i = 0;
@@ -50,31 +27,73 @@ export = {
 
           i++;
 
-          if (method === "count") {
-            leaderboardEmbed.addFields({
-              name: `#${i} - ${userName.user.username}#${userName.user.discriminator}`,
-              value: `\`\`\`${user.score}\`\`\``,
-              inline: false,
-            });
-          } else if (method === "temporal") {
-            leaderboardEmbed.addFields({
-              name: `#${i} - ${userName.user.username}#${userName.user.discriminator}`,
-              value: `\`\`\`${user.score}\`\`\``,
-              inline: false,
-            });
-          } else {
-            leaderboardEmbed.addFields({
-              name: `#${i} - ${userName.user.username}#${userName.user.discriminator}`,
-              value: `\`\`\`${user.score}\`\`\``,
-              inline: false,
-            });
-          }
+          leaderboardEmbed.addFields({
+            name: `#${i} - ${userName.user.username}#${userName.user.discriminator}`,
+            value: `\`\`\`${user.score}\`\`\``,
+            inline: false,
+          });
         } catch (e) {
           console.error(e);
         }
       }
     }
 
-    return await interaction.reply({ embeds: [leaderboardEmbed] });
+    leaderboardEmbed.setFooter({ text: `Page ${page}` });
+
+    const paginationButtons = new ActionRowBuilder<ButtonBuilder>()
+      .addComponents(
+        new ButtonBuilder()
+          .setCustomId("leaderboard_prev")
+          .setLabel("Previous Page")
+          .setStyle(ButtonStyle.Primary)
+          .setDisabled(page === 1),
+        new ButtonBuilder()
+          .setCustomId("leaderboard_next")
+          .setLabel("Next Page")
+          .setStyle(ButtonStyle.Primary)
+          .setDisabled(users.length < 10)
+      );
+
+    return { leaderboardEmbed, paginationButtons };
+}
+
+export = {
+  config: {
+    counting: true,
+  },
+  data: new SlashCommandBuilder()
+    .setName("leaderboard")
+    .setDescription("Check the counting leaderboard."),
+  async execute(interaction: ChatInputCommandInteraction) {
+    if (!interaction.guild || !interaction.channel) return await interaction.reply("This command can only be used in a server.");
+
+    const method = "temporal";
+    let page = 1;
+
+    const {leaderboardEmbed, paginationButtons} = await createLeaderboard(page, method, interaction);
+
+    const isEphemeral = interaction.channel.id === config.channels.counting;
+    await interaction.reply({ embeds: [leaderboardEmbed], components: [paginationButtons], ephemeral: isEphemeral });
+
+    const filter = (i) => i.user.id === interaction.user.id;
+    const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
+
+    collector.on("collect", async (i) => {
+      collector.resetTimer();
+
+      if (i.customId === "leaderboard_prev") {
+        page--;
+      } else if (i.customId === "leaderboard_next") {
+        page++;
+      }
+
+      const {leaderboardEmbed, paginationButtons} = await createLeaderboard(page, method, interaction);
+      await i.update({ embeds: [leaderboardEmbed], components: [paginationButtons] });
+    });
+
+    collector.on("end", async (i) => {
+      const {leaderboardEmbed, paginationButtons} = await createLeaderboard(page, method, interaction);
+      await i.last()?.update({ embeds: [leaderboardEmbed], components: [paginationButtons] });
+    });
   }
 };

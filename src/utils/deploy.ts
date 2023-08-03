@@ -16,6 +16,7 @@ export const deployAppCommands = async (client) => {
     if ('data' in command && 'execute' in command) {
       commands.push(command.data.toJSON())
       client.commands.set(command.data.name, {
+        config: command.config,
         data: command.data,
         async execute (interaction: ChatInputCommandInteraction) {
           try {
